@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const { swaggerUi, swaggerSpec } = require("./config/swagger");
 
 const authRoutes = require('./routes/authRoutes');
 
@@ -14,6 +15,8 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 
 app.use("/api/users", userRoutes);
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.get('/', (req, res) => {
   res.send('API is running');
