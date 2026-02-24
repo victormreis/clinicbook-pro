@@ -8,15 +8,51 @@ const { authorizeAdmin } = require("../middleware/roleMiddleware");
 
 /**
  * @swagger
+ * components:
+ *   schemas:
+ *     UpdateProfileRequest:
+ *       type: object
+ *       required:
+ *         - name
+ *         - email
+ *         - password
+ *       properties:
+ *         name:
+ *           type: string
+ *           example: John Doe
+ *         email:
+ *           type: string
+ *           example: john@example.com
+ *         password:
+ *           type: string
+ *           example: 123456
+ */
+
+/**
+ * @swagger
  * /api/users/profile:
  *   put:
  *     summary: Update logged user profile
  *     tags: [Users]
  *     security:
  *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/UpdateProfileRequest'
  *     responses:
  *       200:
- *         description: Profile updated
+ *         description: Profile updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Profile updated successfully
  */
 router.put("/profile", authenticate, userController.updateProfile);
 
@@ -36,6 +72,21 @@ router.put("/profile", authenticate, userController.updateProfile);
 router.get("/", authenticate, authorizeAdmin, userController.getAllUsers);
 /**
  * @swagger
+ * components:
+ *   schemas:
+ *     UpdateUserRoleRequest:
+ *       type: object
+ *       required:
+ *         - role
+ *       properties:
+ *         role:
+ *           type: string
+ *           enum: [user, admin]
+ *           example: admin
+ */
+
+/**
+ * @swagger
  * /api/users/{id}/role:
  *   patch:
  *     summary: Update user role (Admin only)
@@ -48,9 +99,23 @@ router.get("/", authenticate, authorizeAdmin, userController.getAllUsers);
  *         required: true
  *         schema:
  *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/UpdateUserRoleRequest'
  *     responses:
  *       200:
- *         description: Role updated
+ *         description: Role updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Role updated successfully
  */
 router.patch("/:id/role", authenticate, authorizeAdmin, userController.updateUserRole);
 /**
@@ -61,9 +126,23 @@ router.patch("/:id/role", authenticate, authorizeAdmin, userController.updateUse
  *     tags: [Admin]
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
  *     responses:
  *       200:
- *         description: User deleted
+ *         description: User deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: User deleted successfully
  */
 router.delete("/:id", authenticate, authorizeAdmin, userController.deleteUser);
 
