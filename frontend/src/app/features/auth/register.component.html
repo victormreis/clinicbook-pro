@@ -1,0 +1,49 @@
+<section class="auth-shell">
+  <form class="auth-card" [formGroup]="form" (ngSubmit)="submit()">
+    <h1>Create account</h1>
+    <p>Register to start using ClinicBook.</p>
+
+    <label>
+      Full name
+      <input type="text" formControlName="name" placeholder="John Doe" />
+    </label>
+    @if (form.controls.name.touched && form.controls.name.invalid) {
+      <small>Please provide your full name.</small>
+    }
+
+    <label>
+      Email
+      <input type="email" formControlName="email" placeholder="you@example.com" />
+    </label>
+    @if (form.controls.email.touched && form.controls.email.invalid) {
+      <small>Please enter a valid email.</small>
+    }
+
+    <label>
+      Password
+      <input type="password" formControlName="password" placeholder="At least 6 characters" />
+    </label>
+    @if (form.controls.password.touched && form.controls.password.invalid) {
+      <small>Password must be at least 6 characters.</small>
+    }
+
+    <label>
+      Confirm password
+      <input type="password" formControlName="confirmPassword" placeholder="Re-enter password" />
+    </label>
+    @if (form.touched && form.hasError('passwordMismatch')) {
+      <small>Passwords do not match.</small>
+    }
+
+    @if (authError()) {
+      <small>{{ authError() }}</small>
+    }
+
+    <button type="submit">Register</button>
+
+    <p class="switch-text">
+      Already registered?
+      <a routerLink="/login">Sign in</a>
+    </p>
+  </form>
+</section>

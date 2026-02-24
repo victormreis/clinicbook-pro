@@ -1,0 +1,7 @@
+<section class="dashboard-shell">
+  <article class="dashboard-card">
+    <h1>Welcome, {{ currentUser()?.name }}</h1>
+    <p>You are logged in as {{ currentUser()?.email }}.</p>
+    <button type="button" (click)="logout()">Logout</button>
+  </article>
+</section>
