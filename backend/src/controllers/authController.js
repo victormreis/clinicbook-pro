@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
 const jwt = require("jsonwebtoken");
+const { addToBlacklist } = require("../utils/tokenBlacklist");
 
 exports.register = async (req, res) => {
   try {
@@ -94,4 +95,19 @@ exports.login = async (req, res) => {
   } catch (error) {
     return res.status(500).json({ message: "Server error" });
   }
+};
+
+
+exports.logout = (req, res) => {
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader) {
+    return res.status(400).json({ message: "Token required" });
+  }
+
+  const token = authHeader.split(" ")[1];
+
+  addToBlacklist(token);
+
+  return res.status(200).json({ message: "Logged out successfully" });
 };
