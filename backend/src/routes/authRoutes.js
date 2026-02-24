@@ -5,10 +5,10 @@ const { authenticate } = require('../middleware/authMiddleware');
 
 /**
  * @swagger
- * /api/users/register:
+ * /api/auth/register:
  *   post:
  *     summary: Register new user
- *     tags: [Users]
+ *     tags: [Auth]
  *     requestBody:
  *       required: true
  *       content:
