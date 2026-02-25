@@ -32,7 +32,7 @@ cd backend
 3️⃣ Install Dependencies
 
 
-npm install or npm i
+npm install bcryptjs cors dotenv express jsonwebtoken mysql2 sequelize swagger-jsdoc swagger-ui-express nodemon
 
 This will install:
 
@@ -98,7 +98,7 @@ Make sure the name matches DB_NAME in .env.
 
 7️⃣ Run the Server
 
-npm run dev
+npm run dev or npm start
 
 If everything is correct, you should see:
 
