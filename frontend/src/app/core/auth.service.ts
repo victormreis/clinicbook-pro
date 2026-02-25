@@ -1,12 +1,12 @@
-import { computed, Injectable, signal } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { computed, Injectable, inject, signal } from '@angular/core';
+import { catchError, map, Observable, of, tap } from 'rxjs';
 
 export interface PublicUser {
-  name: string;
+  id?: number;
+  name?: string;
   email: string;
-}
-
-interface StoredUser extends PublicUser {
-  password: string;
+  role?: string;
 }
 
 export interface RegisterPayload {
@@ -15,51 +15,58 @@ export interface RegisterPayload {
   password: string;
 }
 
+interface RegisterResponse {
+  message: string;
+  user: {
+    id: number;
+    name: string;
+    email: string;
+    role: string;
+  };
+}
+
+interface LoginResponse {
+  message: string;
+  token: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private readonly usersKey = 'clinicbook_users';
+  private readonly http = inject(HttpClient);
+  private readonly authApiUrl = 'http://localhost:3000/api/auth';
+  private readonly tokenKey = 'clinicbook_token';
   private readonly currentUserKey = 'clinicbook_current_user';
 
-  private readonly currentUserState = signal<PublicUser | null>(this.readCurrentUser());
+  private readonly currentUserState = signal<PublicUser | null>(this.readInitialUser());
 
   readonly currentUser = this.currentUserState.asReadonly();
   readonly isAuthenticated = computed(() => this.currentUser() !== null);
 
-  register(payload: RegisterPayload): { success: boolean; message?: string } {
-    const users = this.readUsers();
-    const email = payload.email.trim().toLowerCase();
-
-    if (users.some((user) => user.email === email)) {
-      return { success: false, message: 'An account with this email already exists.' };
-    }
-
-    users.push({
-      name: payload.name.trim(),
-      email,
-      password: payload.password
-    });
-
-    this.writeUsers(users);
-    this.setCurrentUser({ name: payload.name.trim(), email });
-
-    return { success: true };
+  register(payload: RegisterPayload): Observable<PublicUser> {
+    return this.http.post<RegisterResponse>(`${this.authApiUrl}/register`, payload).pipe(
+      map((response) => response.user),
+      tap((user) => this.setCurrentUser(user))
+    );
   }
 
-  login(email: string, password: string): boolean {
-    const normalizedEmail = email.trim().toLowerCase();
-    const user = this.readUsers().find((entry) => entry.email === normalizedEmail && entry.password === password);
-
-    if (!user) {
-      return false;
-    }
-
-    this.setCurrentUser({ name: user.name, email: user.email });
-    return true;
+  login(email: string, password: string): Observable<PublicUser> {
+    return this.http.post<LoginResponse>(`${this.authApiUrl}/login`, { email, password }).pipe(
+      tap((response) => this.storeToken(response.token)),
+      map((response) => this.readUserFromToken(response.token)),
+      map((user) => user ?? { email }),
+      tap((user) => this.setCurrentUser(user))
+    );
   }
 
-  logout(): void {
-    localStorage.removeItem(this.currentUserKey);
-    this.currentUserState.set(null);
+  logout(): Observable<void> {
+    const token = this.getStoredToken();
+    const headers = token ? new HttpHeaders({ Authorization: `Bearer ${token}` }) : undefined;
+
+    return this.http.post<{ message: string }>(`${this.authApiUrl}/logout`, {}, { headers }).pipe(
+      map(() => void 0),
+      catchError(() => of(void 0)),
+      tap(() => this.clearSession())
+    );
   }
 
   private setCurrentUser(user: PublicUser): void {
@@ -67,23 +74,83 @@ export class AuthService {
     this.currentUserState.set(user);
   }
 
-  private readUsers(): StoredUser[] {
-    const raw = localStorage.getItem(this.usersKey);
+  private clearSession(): void {
+    localStorage.removeItem(this.currentUserKey);
+    localStorage.removeItem(this.tokenKey);
+    this.currentUserState.set(null);
+  }
 
-    if (!raw) {
-      return [];
+  private storeToken(token: string): void {
+    localStorage.setItem(this.tokenKey, token);
+  }
+
+  private getStoredToken(): string | null {
+    return localStorage.getItem(this.tokenKey);
+  }
+
+  private readInitialUser(): PublicUser | null {
+    const fromStorage = this.readCurrentUser();
+
+    if (fromStorage) {
+      return fromStorage;
+    }
+
+    const token = this.getStoredToken();
+    if (!token) {
+      return null;
+    }
+
+    const fromToken = this.readUserFromToken(token);
+    if (!fromToken) {
+      this.clearSession();
+      return null;
+    }
+
+    this.setCurrentUser(fromToken);
+    return fromToken;
+  }
+
+  private readUserFromToken(token: string): PublicUser | null {
+    const payload = this.decodeJwtPayload(token);
+
+    if (!payload) {
+      return null;
+    }
+
+    const exp = typeof payload['exp'] === 'number' ? payload['exp'] : undefined;
+    const nowInSeconds = Math.floor(Date.now() / 1000);
+    if (exp && exp <= nowInSeconds) {
+      return null;
+    }
+
+    const email = typeof payload['email'] === 'string' ? payload['email'] : undefined;
+    if (!email) {
+      return null;
+    }
+
+    return {
+      id: typeof payload['id'] === 'number' ? payload['id'] : undefined,
+      role: typeof payload['role'] === 'string' ? payload['role'] : undefined,
+      email,
+      name: email.split('@')[0]
+    };
+  }
+
+  private decodeJwtPayload(token: string): Record<string, unknown> | null {
+    const parts = token.split('.');
+
+    if (parts.length !== 3) {
+      return null;
     }
 
     try {
-      const users = JSON.parse(raw) as StoredUser[];
-      return Array.isArray(users) ? users : [];
+      const base64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+      const padded = base64.padEnd(base64.length + ((4 - (base64.length % 4)) % 4), '=');
+      const decoded = atob(padded);
+      return JSON.parse(decoded) as Record<string, unknown>;
     } catch {
-      return [];
+      return null;
     }
-  }
-
-  private writeUsers(users: StoredUser[]): void {
-    localStorage.setItem(this.usersKey, JSON.stringify(users));
   }
 
   private readCurrentUser(): PublicUser | null {
@@ -95,7 +162,7 @@ export class AuthService {
 
     try {
       const user = JSON.parse(raw) as PublicUser;
-      if (!user?.email || !user?.name) {
+      if (!user?.email) {
         return null;
       }
       return user;

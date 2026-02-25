@@ -1,4 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/auth.service';
@@ -26,6 +27,7 @@ export class RegisterComponent {
   private readonly router = inject(Router);
 
   readonly authError = signal('');
+  readonly isSubmitting = signal(false);
 
   readonly form = this.fb.nonNullable.group(
     {
@@ -46,13 +48,16 @@ export class RegisterComponent {
     }
 
     const { name, email, password } = this.form.getRawValue();
-    const result = this.authService.register({ name, email, password });
-
-    if (!result.success) {
-      this.authError.set(result.message ?? 'Registration failed.');
-      return;
-    }
-
-    void this.router.navigateByUrl('/dashboard');
+    this.isSubmitting.set(true);
+    this.authService.register({ name, email, password }).subscribe({
+      next: () => {
+        this.isSubmitting.set(false);
+        void this.router.navigateByUrl('/dashboard');
+      },
+      error: (error: HttpErrorResponse) => {
+        this.isSubmitting.set(false);
+        this.authError.set(error.error?.message ?? 'Registration failed. Please try again.');
+      }
+    });
   }
 }

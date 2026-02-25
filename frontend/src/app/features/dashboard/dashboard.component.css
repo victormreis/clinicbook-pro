@@ -36,3 +36,8 @@ button {
   font-weight: 600;
   cursor: pointer;
 }
+
+button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}

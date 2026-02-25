@@ -61,6 +61,11 @@ button {
   margin-top: 0.25rem;
 }
 
+button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
 .switch-text {
   margin-top: 0.5rem;
   font-size: 0.95rem;

@@ -39,7 +39,9 @@
       <small>{{ authError() }}</small>
     }
 
-    <button type="submit">Register</button>
+    <button type="submit" [disabled]="isSubmitting()">
+      {{ isSubmitting() ? 'Creating account...' : 'Register' }}
+    </button>
 
     <p class="switch-text">
       Already registered?

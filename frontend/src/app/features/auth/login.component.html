@@ -23,7 +23,9 @@
       <small>{{ authError() }}</small>
     }
 
-    <button type="submit">Login</button>
+    <button type="submit" [disabled]="isSubmitting()">
+      {{ isSubmitting() ? 'Signing in...' : 'Login' }}
+    </button>
 
     <p class="switch-text">
       No account?
