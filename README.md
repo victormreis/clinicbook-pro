@@ -6,26 +6,24 @@ ClinicBook Pro - Application Project
 
 This backend provides:
 
-User Registration (US-01)
+- **US-01:** User registration (create account to access the appointment system)  
+- **US-02:** Secure login (access personal appointments)  
+- **US-03:** Logout (keep account secure on shared devices)  
+- **US-04:** Update user profile (keep account details accurate)  
+- **US-05:** Admin user management (maintain system integrity)  
 
-Secure Login with JWT Authentication (US-02)
+All endpoints are fully implemented, tested via Postman, and documented with **Swagger** for easy exploration.
 
-Role-based user system (user / admin)
+---
 
-MySQL database integration
 
-Password hashing using bcrypt
+## 🚀 How to Run the Backend Locally
 
-# 🚀 How to Run the Backend Locally
-
-Follow the steps below carefully.
-
-1️⃣ Clone the Repository <br>
+### 1️⃣ Clone the Repository
+```bash
 git clone https://github.com/victormreis/clinicbook-pro.git
-<br>
 cd clinicbook-pro
 
-<br> 
 
 2️⃣ Navigate to the Backend Folder 
 
@@ -34,7 +32,7 @@ cd backend
 3️⃣ Install Dependencies
 
 
-npm install or npm i
+npm install bcryptjs cors dotenv express jsonwebtoken mysql2 sequelize swagger-jsdoc swagger-ui-express nodemon
 
 This will install:
 
@@ -49,6 +47,10 @@ bcrypt
 jsonwebtoken
 
 dotenv
+
+swagger-ui-express
+
+swagger-jsdoc
 
 4️⃣ Create Environment Variables File
 
@@ -96,85 +98,29 @@ Make sure the name matches DB_NAME in .env.
 
 7️⃣ Run the Server
 
-npm start
+npm run dev or npm start
 
 If everything is correct, you should see:
 
 Backend running on port 3000
 Database connected successfully
 
-🧪 API Endpoints
-🔹 Register User
+# 🧪 Explore the API with Swagger
 
-POST
+Swagger is available at: http://localhost:3000/api-docs
 
-http://localhost:3000/api/users/register
+From here you can:
 
-Body (JSON):
+View all available endpoints
 
-{
-  "name": "John Doe",
-  "email": "john@test.com",
-  "password": "123456"
-}
+See request/response schemas
 
+Test routes directly from the browser
 
-🔹 Login
+Explore authentication, profile management, and admin features
 
-POST
+No need to manually check each route; Swagger provides full API documentation dynamically.
 
-http://localhost:3000/api/auth/login
-
-Body (JSON):
-
-{
-
-  "email": "john@test.com",
-  
-  "password": "123456"
-  
-}
-
-Response:
-
-{
-
-  "message": "Login successful",
-  
-  "token": "JWT_TOKEN_HERE"
-  
-}
-
-Role System
-
-All users are created as user by default.
-
-Admin users must be created manually in the database.
-
-Only admins will be able to manage roles in future features.
-
-📂 Project Structure (Backend)
-
-backend/
-
-
-├── controllers/
-
-├── models/
-
-├── routes/
-
-├── config/
-
-├── app.js
-
-├── server.js
-
-├── package.json
-
-├── .env
-
-├── .env.example
 
 
 ⚠️ Common Issues
