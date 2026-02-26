@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { computed, Injectable, inject, signal } from '@angular/core';
 import { catchError, map, Observable, of, tap } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface PublicUser {
   id?: number;
@@ -33,7 +34,7 @@ interface LoginResponse {
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly http = inject(HttpClient);
-  private readonly authApiUrl = 'http://localhost:3000/api/auth';
+  private readonly authApiUrl = environment.apiUrl;
   private readonly tokenKey = 'clinicbook_token';
   private readonly currentUserKey = 'clinicbook_current_user';
 
