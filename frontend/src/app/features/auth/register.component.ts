@@ -17,6 +17,7 @@ function passwordMatchValidator(control: AbstractControl): ValidationErrors | nu
 
 @Component({
   selector: 'app-register',
+  standalone: true,
   imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './register.component.html',
   styleUrl: './auth-form.css'
@@ -52,7 +53,7 @@ export class RegisterComponent {
     this.authService.register({ name, email, password }).subscribe({
       next: () => {
         this.isSubmitting.set(false);
-        void this.router.navigateByUrl('/dashboard');
+        void this.router.navigateByUrl('/login');
       },
       error: (error: HttpErrorResponse) => {
         this.isSubmitting.set(false);

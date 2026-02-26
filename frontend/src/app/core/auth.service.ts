@@ -44,8 +44,7 @@ export class AuthService {
 
   register(payload: RegisterPayload): Observable<PublicUser> {
     return this.http.post<RegisterResponse>(`${this.authApiUrl}/register`, payload).pipe(
-      map((response) => response.user),
-      tap((user) => this.setCurrentUser(user))
+      map((response) => response.user)
     );
   }
 
@@ -89,21 +88,27 @@ export class AuthService {
   }
 
   private readInitialUser(): PublicUser | null {
-    const fromStorage = this.readCurrentUser();
-
-    if (fromStorage) {
-      return fromStorage;
-    }
-
     const token = this.getStoredToken();
     if (!token) {
+      localStorage.removeItem(this.currentUserKey);
       return null;
     }
 
     const fromToken = this.readUserFromToken(token);
     if (!fromToken) {
-      this.clearSession();
+      localStorage.removeItem(this.currentUserKey);
+      localStorage.removeItem(this.tokenKey);
       return null;
+    }
+
+    const fromStorage = this.readCurrentUser();
+    if (fromStorage?.email === fromToken.email) {
+      const hydratedUser: PublicUser = {
+        ...fromToken,
+        name: fromStorage.name ?? fromToken.name
+      };
+      this.setCurrentUser(hydratedUser);
+      return hydratedUser;
     }
 
     this.setCurrentUser(fromToken);

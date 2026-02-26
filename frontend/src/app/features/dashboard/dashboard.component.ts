@@ -4,6 +4,7 @@ import { AuthService } from '../../core/auth.service';
 
 @Component({
   selector: 'app-dashboard',
+  standalone: true,
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
