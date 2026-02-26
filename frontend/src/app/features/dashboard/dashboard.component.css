@@ -1,0 +1,43 @@
+:host {
+  display: block;
+}
+
+.dashboard-shell {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+}
+
+.dashboard-card {
+  width: min(100%, 560px);
+  background: #ffffff;
+  border: 1px solid #d9dee7;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 14px 40px rgba(16, 24, 40, 0.08);
+}
+
+h1 {
+  margin: 0;
+  color: #0b1f3b;
+}
+
+p {
+  color: #4c5d77;
+}
+
+button {
+  border: 0;
+  border-radius: 10px;
+  padding: 0.75rem 1.25rem;
+  background: #b42318;
+  color: #ffffff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}

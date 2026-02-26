@@ -1,0 +1,35 @@
+<section class="auth-shell">
+  <form class="auth-card" [formGroup]="form" (ngSubmit)="submit()">
+    <h1>Sign in</h1>
+    <p>Access your ClinicBook account.</p>
+
+    <label>
+      Email
+      <input type="email" formControlName="email" placeholder="you@example.com" />
+    </label>
+    @if (form.controls.email.touched && form.controls.email.invalid) {
+      <small>Please enter a valid email.</small>
+    }
+
+    <label>
+      Password
+      <input type="password" formControlName="password" placeholder="At least 6 characters" />
+    </label>
+    @if (form.controls.password.touched && form.controls.password.invalid) {
+      <small>Password must be at least 6 characters.</small>
+    }
+
+    @if (authError()) {
+      <small>{{ authError() }}</small>
+    }
+
+    <button type="submit" [disabled]="isSubmitting()">
+      {{ isSubmitting() ? 'Signing in...' : 'Login' }}
+    </button>
+
+    <p class="switch-text">
+      No account?
+      <a routerLink="/register">Create one</a>
+    </p>
+  </form>
+</section>
