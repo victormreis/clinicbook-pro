@@ -14,6 +14,7 @@ export class DashboardComponent {
   private readonly router = inject(Router);
 
   readonly currentUser = this.authService.currentUser;
+  readonly firstName = this.authService.userFirstName;
   readonly isSubmitting = signal(false);
 
   logout(): void {

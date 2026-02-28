@@ -1,6 +1,6 @@
 <section class="dashboard-shell">
   <article class="dashboard-card">
-    <h1>Welcome, {{ currentUser()?.name || currentUser()?.email }}</h1>
+    <h1>Welcome, {{ firstName() }}!</h1>
     
     <div class="dashboard-actions">
       <button type="button" routerLink="/profile" class="secondary-btn">
