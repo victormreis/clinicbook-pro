@@ -1,10 +1,11 @@
 import { Component, inject, signal } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../core/auth.service';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
+  imports: [RouterModule],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
@@ -13,6 +14,7 @@ export class DashboardComponent {
   private readonly router = inject(Router);
 
   readonly currentUser = this.authService.currentUser;
+  readonly firstName = this.authService.userFirstName;
   readonly isSubmitting = signal(false);
 
   logout(): void {

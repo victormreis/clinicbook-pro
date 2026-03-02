@@ -1,0 +1,54 @@
+<section class="dashboard-shell">
+  <article class="dashboard-card" style="max-width: 900px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+      <h2>User Management</h2>
+      <button routerLink="/dashboard" class="secondary-btn">Back to Dashboard</button>
+    </div>
+
+    @if (isLoading()) {
+      <p>Loading system accounts...</p>
+    } @else {
+      <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse; text-align: left;">
+          <thead>
+            <tr style="border-bottom: 2px solid #eee;">
+              <th style="padding: 10px;">Name</th>
+              <th style="padding: 10px;">Email</th>
+              <th style="padding: 10px;">Role</th>
+              <th style="padding: 10px; text-align: right;">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (user of users(); track user.id) {
+              <tr style="border-bottom: 1px solid #eee;">
+                <td style="padding: 10px;">{{ user.name || 'N/A' }}</td>
+                <td style="padding: 10px;">{{ user.email }}</td>
+                <td style="padding: 10px;">
+                  <span [style.color]="user.role === 'admin' ? '#2ecc71' : '#7f8c8d'" style="font-weight: bold;">
+                    {{ user.role | uppercase }}
+                  </span>
+                </td>
+                <td style="padding: 10px; text-align: right;">
+                  @if (user.id !== currentUser()?.id) {
+                    <button (click)="toggleRole(user)" style="margin-right: 10px; padding: 5px 10px;">
+                      Set as {{ user.role === 'admin' ? 'User' : 'Admin' }}
+                    </button>
+                    <button (click)="deleteUser(user.id)" style="background-color: #e74c3c; padding: 5px 10px;">
+                      Delete
+                    </button>
+                  } @else {
+                    <small><i>(You)</i></small>
+                  }
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="4" style="padding: 20px; text-align: center;">No other users found.</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </article>
+</section>

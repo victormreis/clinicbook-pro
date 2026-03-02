@@ -1,9 +1,21 @@
 <section class="dashboard-shell">
   <article class="dashboard-card">
-    <h1>Welcome, {{ currentUser()?.name || currentUser()?.email }}</h1>
-    <p>You are logged in as {{ currentUser()?.email }}.</p>
-    <button type="button" (click)="logout()" [disabled]="isSubmitting()">
-      {{ isSubmitting() ? 'Logging out...' : 'Logout' }}
-    </button>
+    <h1>Welcome, {{ firstName() }}!</h1>
+    
+    <div class="dashboard-actions">
+      <button type="button" routerLink="/profile" class="secondary-btn">
+        Edit Profile
+      </button>
+
+      @if (currentUser()?.role === 'admin') {
+        <button type="button" routerLink="/admin/users" class="primary-btn">
+          Manage System Users
+        </button>
+      }
+
+      <button type="button" (click)="logout()" [disabled]="isSubmitting()">
+        {{ isSubmitting() ? 'Logging out...' : 'Logout' }}
+      </button>
+    </div>
   </article>
 </section>

@@ -16,6 +16,12 @@ export interface RegisterPayload {
   password: string;
 }
 
+export interface UpdateProfilePayload {
+  name?: string;
+  email?: string;
+  password?: string;
+}
+
 interface RegisterResponse {
   message: string;
   user: {
@@ -31,18 +37,64 @@ interface LoginResponse {
   token: string;
 }
 
+interface ActionResponse {
+  message: string;
+  user?: PublicUser;
+}
+
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly http = inject(HttpClient);
-  private readonly authApiUrl = environment.apiUrl;
+  private readonly authApiUrl = `${environment.apiUrl}/auth`;
+  private readonly userApiUrl = `${environment.apiUrl}/users`;
   private readonly tokenKey = 'clinicbook_token';
   private readonly currentUserKey = 'clinicbook_current_user';
 
+  // State management using Signals. Calls the safely-written readInitialUser.
   private readonly currentUserState = signal<PublicUser | null>(this.readInitialUser());
 
   readonly currentUser = this.currentUserState.asReadonly();
   readonly isAuthenticated = computed(() => this.currentUser() !== null);
+  readonly userFirstName = computed(() => {
+    const fullUser = this.currentUser();
+    if (!fullUser || !fullUser.name) return '';
 
+    return fullUser.name.trim().split(' ')[0];
+  })
+
+  // --- Profile Management ---
+  updateProfile(payload: UpdateProfilePayload): Observable<ActionResponse> {
+    const token = this.getStoredToken();
+    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+
+    return this.http.put<ActionResponse>(`${this.userApiUrl}/profile`, payload, { headers}).pipe(tap((response) => {
+      if (response.user) this.setCurrentUser(response.user); })
+      );
+  }
+
+  // --- Admin Management ---
+  getAllUsers(): Observable<PublicUser[]> {
+    const token = this.getStoredToken();
+    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+
+    return this.http.get<PublicUser[]>(this.userApiUrl, { headers });
+  }
+
+  updateUserRole(userId: number, role: string): Observable<ActionResponse> {
+    const token = this.getStoredToken();
+    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+
+    return this.http.patch<ActionResponse>(`${this.userApiUrl}/${userId}/role`, { role }, { headers });
+  }
+
+  deleteUser(userId: number): Observable<ActionResponse> {
+    const token = this.getStoredToken();
+    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+
+    return this.http.delete<ActionResponse>(`${this.userApiUrl}/${userId}`, { headers });
+  }
+
+  // --- Existing Methods ---
   register(payload: RegisterPayload): Observable<PublicUser> {
     return this.http.post<RegisterResponse>(`${this.authApiUrl}/register`, payload).pipe(
       map((response) => response.user)
@@ -69,6 +121,7 @@ export class AuthService {
     );
   }
 
+  // --- Private Helpers ---
   private setCurrentUser(user: PublicUser): void {
     localStorage.setItem(this.currentUserKey, JSON.stringify(user));
     this.currentUserState.set(user);
@@ -108,20 +161,20 @@ export class AuthService {
         ...fromToken,
         name: fromStorage.name ?? fromToken.name
       };
-      this.setCurrentUser(hydratedUser);
+      
+      // Update localStorage directly to avoid calling .set() on an uninitialized signal
+      localStorage.setItem(this.currentUserKey, JSON.stringify(hydratedUser));
       return hydratedUser;
     }
 
-    this.setCurrentUser(fromToken);
+    // Update localStorage directly
+    localStorage.setItem(this.currentUserKey, JSON.stringify(fromToken));
     return fromToken;
   }
 
   private readUserFromToken(token: string): PublicUser | null {
     const payload = this.decodeJwtPayload(token);
-
-    if (!payload) {
-      return null;
-    }
+    if (!payload) return null;
 
     const exp = typeof payload['exp'] === 'number' ? payload['exp'] : undefined;
     const nowInSeconds = Math.floor(Date.now() / 1000);
@@ -130,15 +183,15 @@ export class AuthService {
     }
 
     const email = typeof payload['email'] === 'string' ? payload['email'] : undefined;
-    if (!email) {
-      return null;
-    }
+    if (!email) return null;
+
+    const name = typeof payload['name'] === 'string' ? payload['name'] : email.split('@')[0];
 
     return {
       id: typeof payload['id'] === 'number' ? payload['id'] : undefined,
       role: typeof payload['role'] === 'string' ? payload['role'] : undefined,
       email,
-      name: email.split('@')[0]
+      name: name
     };
   }
 

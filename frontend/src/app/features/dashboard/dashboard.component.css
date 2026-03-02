@@ -30,6 +30,7 @@ p {
 button {
   border: 0;
   border-radius: 10px;
+  margin: 3px;
   padding: 0.75rem 1.25rem;
   background: #b42318;
   color: #ffffff;

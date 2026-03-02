@@ -1,0 +1,30 @@
+<section class="auth-form-container">
+  <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="auth-form">
+
+      <h2>Update Profile</h2>
+
+    
+    <div class="form-field">
+      <label for="name">Name</label>
+      <input id="name" type="text" formControlName="name" placeholder="Enter your name" />
+    </div>
+
+    <div class="form-field">
+      <label for="email">Email</label>
+      <input id="email" type="email" formControlName="email" placeholder="Enter your email" />
+    </div>
+
+    <div class="form-field">
+      <label for="password">New Password (leave blank to keep current)</label>
+      <input id="password" type="password" formControlName="password" placeholder="Enter new password" />
+    </div>
+
+    <button type="submit" [disabled]="profileForm.invalid || isSubmitting()"> 
+      {{ isSubmitting() ? 'Saving...' : 'Save Changes' }}
+    </button>
+
+    <button type="button" routerLink="/dashboard" class="secondary-btn" style="align-self: flex-end; margin: 10px 0px;">
+          Home
+    </button>
+  </form>
+</section>
