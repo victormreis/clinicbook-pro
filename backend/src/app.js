@@ -10,6 +10,8 @@ const specialtyRoutes = require("./routes/specialtyRoutes");
 
 const doctorRoutes = require("./routes/doctorRoutes");
 
+const appointmentRoutes = require("./routes/appointmentRoutes");
+
 const app = express();
 
 app.use(cors());
@@ -23,6 +25,8 @@ app.use("/api/users", userRoutes);
 app.use("/api/specialties", specialtyRoutes);
 
 app.use("/api/doctors", doctorRoutes);
+
+app.use("/api/appointments", appointmentRoutes);
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 

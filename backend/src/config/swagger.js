@@ -70,6 +70,7 @@ const options = {
 						},
 					},
 				},
+
 				Doctor: {
 					type: "object",
 					properties: {
@@ -136,6 +137,55 @@ const options = {
 						consultationDuration: {
 							type: "integer",
 							example: 30,
+						},
+					},
+				},
+
+				Appointment: {
+					type: "object",
+					properties: {
+						id: {
+							type: "integer",
+							example: 1,
+						},
+						doctorId: {
+							type: "integer",
+							example: 1,
+						},
+						userId: {
+							type: "integer",
+							example: 1,
+						},
+						appointmentDate: {
+							type: "string",
+							format: "date",
+							example: "2024-07-01",
+						},
+						appointmentTime: {
+							type: "string",
+							format: "time",
+							example: "14:30",
+						},
+					},
+				},
+
+				CreateAppointmentRequest: {
+					type: "object",
+					required: ["doctorId", "appointmentDate", "appointmentTime"],
+					properties: {
+						doctorId: {
+							type: "integer",
+							example: 1,
+						},
+						appointmentDate: {
+							type: "string",
+							format: "date",
+							example: "2024-07-01",
+						},
+						appointmentTime: {
+							type: "string",
+							format: "time",
+							example: "14:30",
 						},
 					},
 				},
