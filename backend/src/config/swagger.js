@@ -21,32 +21,59 @@ const options = {
           bearerFormat: "JWT"
         }
       },
-      schemas: {
-        User: {
-          type: "object",
-          properties: {
-            id: { type: "integer" },
-            name: { type: "string" },
-            email: { type: "string" },
-            role: { type: "string" }
-          }
-        },
-        LoginRequest: {
-          type: "object",
-          properties: {
-            email: { type: "string" },
-            password: { type: "string" }
-          }
-        },
-        RegisterRequest: {
-          type: "object",
-          properties: {
-            name: { type: "string" },
-            email: { type: "string" },
-            password: { type: "string" }
-          }
-        }
+    schemas: {
+  User: {
+    type: "object",
+    properties: {
+      id: { type: "integer" },
+      name: { type: "string" },
+      email: { type: "string" },
+      role: { type: "string" }
+    }
+  },
+
+  LoginRequest: {
+    type: "object",
+    properties: {
+      email: { type: "string" },
+      password: { type: "string" }
+    }
+  },
+
+  RegisterRequest: {
+    type: "object",
+    properties: {
+      name: { type: "string" },
+      email: { type: "string" },
+      password: { type: "string" }
+    }
+  },
+
+  Specialty: {
+    type: "object",
+    properties: {
+      id: {
+        type: "integer",
+        example: 1
+      },
+      name: {
+        type: "string",
+        example: "Cardiology"
       }
+    }
+  },
+
+  CreateSpecialtyRequest: {
+    type: "object",
+    required: ["name"],
+    properties: {
+      name: {
+        type: "string",
+        example: "Cardiology"
+      }
+    }
+  }
+}
     }
   },
   apis: ["./src/routes/*.js"],
