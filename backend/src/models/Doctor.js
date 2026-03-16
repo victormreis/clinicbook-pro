@@ -11,6 +11,11 @@ const Doctor = sequelize.define("Doctor", {
     type: DataTypes.STRING,
     allowNull: false,
     unique: true
+  }, 
+   consultationDuration: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    defaultValue: 30
   }
 });
 
