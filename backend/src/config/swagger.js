@@ -113,6 +113,10 @@ CreateDoctorRequest: {
     specialtyId: {
       type: "integer",
       example: 1
+    },
+    consultationDuration: {
+      type: "integer",
+      example: 30
     }
   }
 }

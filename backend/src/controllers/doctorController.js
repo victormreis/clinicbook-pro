@@ -2,58 +2,94 @@ const Doctor = require("../models/Doctor");
 const Specialty = require("../models/Specialty");
 
 exports.createDoctor = async (req, res) => {
-  try {
+	try {
+		const { name, email, specialtyId, consultationDuration } = req.body;
 
-    const { name, email, specialtyId } = req.body;
+		if (!name || !email || !specialtyId) {
+			return res.status(400).json({
+				message: "Name, email and specialtyId are required",
+			});
+		}
 
-    if (!name || !email || !specialtyId) {
-      return res.status(400).json({
-        message: "Name, email and specialtyId are required"
-      });
-    }
+		const emailRegex = /\S+@\S+\.\S+/;
 
-    const emailRegex = /\S+@\S+\.\S+/;
+		if (!emailRegex.test(email)) {
+			return res.status(400).json({
+				message: "Invalid email format",
+			});
+		}
 
-    if (!emailRegex.test(email)) {
-      return res.status(400).json({
-        message: "Invalid email format"
-      });
-    }
+		const specialty = await Specialty.findByPk(specialtyId);
 
-    const specialty = await Specialty.findByPk(specialtyId);
+		if (!specialty) {
+			return res.status(404).json({
+				message: "Specialty not found",
+			});
+		}
 
-    if (!specialty) {
-      return res.status(404).json({
-        message: "Specialty not found"
-      });
-    }
+		const existingDoctor = await Doctor.findOne({ where: { email } });
 
-    const existingDoctor = await Doctor.findOne({ where: { email } });
+		if (existingDoctor) {
+			return res.status(400).json({
+				message: "Doctor with this email already exists",
+			});
+		}
 
-    if (existingDoctor) {
-      return res.status(400).json({
-        message: "Doctor with this email already exists"
-      });
-    }
+		const doctor = await Doctor.create({
+			name,
+			email,
+			specialtyId,
+			consultationDuration,
+		});
 
-    const doctor = await Doctor.create({
-      name,
-      email,
-      specialtyId
-    });
+		res.status(201).json({
+			message: "Doctor created successfully",
+			doctor,
+		});
+	} catch (error) {
+		console.error(error);
 
-    res.status(201).json({
-      message: "Doctor created successfully",
-      doctor
-    });
+		res.status(500).json({
+			message: "Server error",
+		});
+	}
+};
 
-  } catch (error) {
+exports.getAllDoctors = async (req, res) => {
+	try {
+		const doctors = await Doctor.findAll({
+			attributes: ["id", "name", "email"],
+			include: {
+				model: Specialty,
+				as: "specialty",
+				attributes: ["id", "name"],
+			},
+		});
 
-    console.error(error);
+		res.status(200).json(doctors);
+	} catch (error) {
+		console.error(error);
 
-    res.status(500).json({
-      message: "Server error"
-    });
+		res.status(500).json({
+			message: "Server error",
+		});
+	}
+};
 
-  }
+exports.getDoctorsBySpecialty = async (req, res) => {
+	try {
+		const { specialtyId } = req.params;
+
+		const doctors = await Doctor.findAll({
+			where: { specialtyId },
+		});
+
+		res.status(200).json(doctors);
+	} catch (error) {
+		console.error(error);
+
+		res.status(500).json({
+			message: "Server error",
+		});
+	}
 };
