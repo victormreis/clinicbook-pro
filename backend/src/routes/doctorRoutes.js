@@ -6,10 +6,67 @@ const doctorController = require("../controllers/doctorController");
 const { authenticate } = require("../middleware/authMiddleware");
 const { authorizeAdmin } = require("../middleware/roleMiddleware");
 
+/**
+ * @swagger
+ * /api/doctors:
+ *   get:
+ *     summary: Get all doctors
+ *     description: Returns a list of all registered doctors
+ *     tags: [Doctors]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of doctors
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Doctor'
+ *       401:
+ *         description: Unauthorized
+ */
 router.get(
   "/",
   authenticate,
   doctorController.getAllDoctors
+);
+
+
+/**
+ * @swagger
+ * /api/doctors/specialty/{specialtyId}:
+ *   get:
+ *     summary: Get doctors by specialty
+ *     tags: [Doctors]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: specialtyId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the specialty
+ *     responses:
+ *       200:
+ *         description: List of doctors for the given specialty
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Doctor'
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Specialty not found
+ */
+router.get(
+  "/specialty/:specialtyId",
+  authenticate,
+  doctorController.getDoctorsBySpecialty
 );
 
 
