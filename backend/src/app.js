@@ -6,6 +6,8 @@ const authRoutes = require('./routes/authRoutes');
 
 const userRoutes = require("./routes/userRoutes");
 
+const specialtyRoutes = require("./routes/specialtyRoutes");
+
 const app = express();
 
 app.use(cors());
@@ -15,6 +17,8 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 
 app.use("/api/users", userRoutes);
+
+app.use("/api/specialties", specialtyRoutes);
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
