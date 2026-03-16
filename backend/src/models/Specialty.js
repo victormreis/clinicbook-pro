@@ -9,4 +9,16 @@ const Specialty = sequelize.define("Specialty", {
   }
 });
 
+const Doctor = require("./Doctor");
+
+Specialty.hasMany(Doctor, {
+  foreignKey: "specialtyId",
+  as: "doctors"
+});
+
+Doctor.belongsTo(Specialty, {
+  foreignKey: "specialtyId",
+  as: "specialty"
+});
+
 module.exports = Specialty;

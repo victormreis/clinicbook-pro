@@ -72,7 +72,50 @@ const options = {
         example: "Cardiology"
       }
     }
+  },
+  Doctor: {
+  type: "object",
+  properties: {
+    id: {
+      type: "integer",
+      example: 1
+    },
+    name: {
+      type: "string",
+      example: "Dr. John Smith"
+    },
+    email: {
+      type: "string",
+      example: "john.smith@clinic.com"
+    },
+    specialtyId: {
+      type: "integer",
+      example: 1
+    },
+    specialty: {
+      $ref: "#/components/schemas/Specialty"
+    }
   }
+},
+
+CreateDoctorRequest: {
+  type: "object",
+  required: ["name", "email", "specialtyId"],
+  properties: {
+    name: {
+      type: "string",
+      example: "Dr. John Smith"
+    },
+    email: {
+      type: "string",
+      example: "john.smith@clinic.com"
+    },
+    specialtyId: {
+      type: "integer",
+      example: 1
+    }
+  }
+}
 }
     }
   },
