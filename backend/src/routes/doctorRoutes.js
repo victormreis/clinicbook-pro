@@ -103,6 +103,72 @@ router.post(
   doctorController.createDoctor
 );
 
+/**
+ * @swagger
+ * /api/doctors/{id}:
+ *   put:
+ *     summary: Update doctor (Admin only)
+ *     tags: [Doctors]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Doctor ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/UpdateDoctorRequest'
+ *     responses:
+ *       200:
+ *         description: Doctor updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Doctor'
+ *       404:
+ *         description: Doctor not found
+ */
+router.put(
+  "/:id",
+  authenticate,
+  authorizeAdmin,
+  doctorController.updateDoctor
+);
+
+/**
+ * @swagger
+ * /api/doctors/{id}:
+ *   delete:
+ *     summary: Delete doctor (Admin only)
+ *     tags: [Doctors]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Doctor ID
+ *     responses:
+ *       200:
+ *         description: Doctor deleted successfully
+ *       404:
+ *         description: Doctor not found
+ */
+
+router.delete(
+  "/:id",
+  authenticate,
+  authorizeAdmin,
+  doctorController.deleteDoctor
+);
 
 
 module.exports = router;
