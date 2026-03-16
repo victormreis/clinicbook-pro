@@ -57,3 +57,28 @@ exports.createDoctor = async (req, res) => {
 
   }
 };
+
+exports.getAllDoctors = async (req, res) => {
+  try {
+
+    const doctors = await Doctor.findAll({
+      attributes: ["id", "name", "email"],
+      include: {
+        model: Specialty,
+        as: "specialty",
+        attributes: ["id", "name"]
+      }
+    });
+
+    res.status(200).json(doctors);
+
+  } catch (error) {
+
+    console.error(error);
+
+    res.status(500).json({
+      message: "Server error"
+    });
+
+  }
+};

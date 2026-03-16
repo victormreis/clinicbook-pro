@@ -6,6 +6,13 @@ const doctorController = require("../controllers/doctorController");
 const { authenticate } = require("../middleware/authMiddleware");
 const { authorizeAdmin } = require("../middleware/roleMiddleware");
 
+router.get(
+  "/",
+  authenticate,
+  doctorController.getAllDoctors
+);
+
+
 /**
  * @swagger
  * /api/doctors:
@@ -38,5 +45,7 @@ router.post(
   authorizeAdmin,
   doctorController.createDoctor
 );
+
+
 
 module.exports = router;
