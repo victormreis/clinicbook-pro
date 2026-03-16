@@ -31,3 +31,23 @@ exports.createSpecialty = async (req, res) => {
     });
   }
 };
+
+exports.getAllSpecialties = async (req, res) => {
+  try {
+
+    const specialties = await Specialty.findAll({
+      order: [["name", "ASC"]]
+    });
+
+    res.status(200).json(specialties);
+
+  } catch (error) {
+
+    console.error(error);
+
+    res.status(500).json({
+      message: "Server error"
+    });
+
+  }
+};
