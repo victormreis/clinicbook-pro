@@ -13,6 +13,14 @@ const Appointment = sequelize.define("Appointment", {
   status: {
     type: DataTypes.STRING,
     defaultValue: "booked"
+  },
+  userId: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+  },
+  doctorId: {
+    type: DataTypes.INTEGER,
+    allowNull: false
   }
 });
 
