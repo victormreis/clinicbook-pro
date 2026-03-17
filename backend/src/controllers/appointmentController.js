@@ -79,3 +79,36 @@ exports.createAppointment = async (req, res) => {
     });
   }
 };
+
+exports.getMyAppointments = async (req, res) => {
+  try {
+
+    const appointments = await Appointment.findAll({
+      where: {
+        userId: req.user.id
+      },
+      include: [
+        {
+          model: Doctor,
+          as: "doctor",
+          attributes: ["id", "name"]
+        }
+      ],
+      order: [
+        ["appointmentDate", "ASC"],
+        ["appointmentTime", "ASC"]
+      ]
+    });
+
+    res.status(200).json(appointments);
+
+  } catch (error) {
+
+    console.error(error);
+
+    res.status(500).json({
+      message: "Server error"
+    });
+
+  }
+};
