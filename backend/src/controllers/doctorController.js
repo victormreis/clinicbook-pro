@@ -2,10 +2,12 @@ const Doctor = require("../models/Doctor");
 const Specialty = require("../models/Specialty");
 const Appointment = require("../models/Appointment");
 
+const CONSULTATION_DURATION = 30;
+
 
 exports.createDoctor = async (req, res) => {
 	try {
-		const { name, email, specialtyId, consultationDuration } = req.body;
+		const { name, email, specialtyId, CONSULTATION_DURATION } = req.body;
 
 		if (!name || !email || !specialtyId) {
 			return res.status(400).json({
@@ -41,7 +43,7 @@ exports.createDoctor = async (req, res) => {
 			name,
 			email,
 			specialtyId,
-			consultationDuration,
+			CONSULTATION_DURATION,
 		});
 
 		res.status(201).json({
@@ -100,7 +102,7 @@ exports.updateDoctor = async (req, res) => {
   try {
 
     const { id } = req.params;
-    const { name, email, specialtyId, consultationDuration } = req.body;
+    const { name, email, specialtyId, CONSULTATION_DURATION } = req.body;
 
     const doctor = await Doctor.findByPk(id);
 
@@ -114,7 +116,7 @@ exports.updateDoctor = async (req, res) => {
       name,
       email,
       specialtyId,
-      consultationDuration
+      CONSULTATION_DURATION
     });
 
     res.status(200).json({
@@ -183,7 +185,7 @@ exports.getAvailableTimes = async (req, res) => {
       });
     }
 
-    const consultationDuration = doctor.consultationDuration;
+  
 
     // Clinic working hours
     const startHour = 9;
@@ -202,7 +204,7 @@ exports.getAvailableTimes = async (req, res) => {
       availableTimes.push(timeString);
 
       currentTime = new Date(
-        currentTime.getTime() + consultationDuration * 60000
+        currentTime.getTime() + CONSULTATION_DURATION * 60000
       );
 
     }
