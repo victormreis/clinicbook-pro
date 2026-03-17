@@ -1,5 +1,7 @@
 const Doctor = require("../models/Doctor");
 const Specialty = require("../models/Specialty");
+const Appointment = require("../models/Appointment");
+
 
 exports.createDoctor = async (req, res) => {
 	try {
@@ -149,6 +151,80 @@ exports.deleteDoctor = async (req, res) => {
     res.status(200).json({
       message: "Doctor deleted successfully"
     });
+
+  } catch (error) {
+
+    console.error(error);
+
+    res.status(500).json({
+      message: "Server error"
+    });
+
+  }
+};
+
+exports.getAvailableTimes = async (req, res) => {
+  try {
+
+    const { doctorId } = req.params;
+    const { date } = req.query;
+
+    if (!date) {
+      return res.status(400).json({
+        message: "date query parameter is required"
+      });
+    }
+
+    const doctor = await Doctor.findByPk(doctorId);
+
+    if (!doctor) {
+      return res.status(404).json({
+        message: "Doctor not found"
+      });
+    }
+
+    const consultationDuration = doctor.consultationDuration;
+
+    // Clinic working hours
+    const startHour = 9;
+    const endHour = 17;
+
+    const availableTimes = [];
+
+    let currentTime = new Date(`${date}T09:00`);
+    const endTimeLimit = new Date(`${date}T17:00`);
+
+    // Generate all possible times
+    while (currentTime < endTimeLimit) {
+
+      const timeString = currentTime.toTimeString().slice(0,5);
+
+      availableTimes.push(timeString);
+
+      currentTime = new Date(
+        currentTime.getTime() + consultationDuration * 60000
+      );
+
+    }
+
+    // Get appointments already booked
+    const appointments = await Appointment.findAll({
+      where: {
+        doctorId,
+        appointmentDate: date
+      }
+    });
+
+    const bookedTimes = appointments.map(app =>
+      app.appointmentTime.slice(0,5)
+    );
+
+    // Remove booked times
+    const freeTimes = availableTimes.filter(
+      time => !bookedTimes.includes(time)
+    );
+
+    res.status(200).json(freeTimes);
 
   } catch (error) {
 
