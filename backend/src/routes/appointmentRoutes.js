@@ -5,6 +5,26 @@ const appointmentController = require("../controllers/appointmentController");
 
 const { authenticate } = require("../middleware/authMiddleware");
 
+
+
+/**
+ * @swagger
+ * /api/appointments/my:
+ *   get:
+ *     summary: Get logged user's appointments
+ *     tags: [Appointments]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of user appointments
+ */
+router.get(
+  "/my",
+  authenticate,
+  appointmentController.getMyAppointments
+);
+
 /**
  * @swagger
  * /api/appointments:
