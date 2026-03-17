@@ -12,12 +12,48 @@ const { authenticate } = require("../middleware/authMiddleware");
  * /api/appointments/my:
  *   get:
  *     summary: Get logged user's appointments
+ *     description: Returns a list of all appointments that belong to the authenticated user.
  *     tags: [Appointments]
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: List of user appointments
+ *         description: List of user appointments retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: string
+ *                     example: "1"
+ *                   appointmentDate:
+ *                     type: string
+ *                     example: "2026-03-20"
+ *                   appointmentTime:
+ *                     type: string
+ *                     example: "14:00"
+ *                   status:
+ *                     type: string
+ *                     example: scheduled
+ *                   createdAt:
+ *                     type: string
+ *                     example: "2026-03-15T10:30:00.000Z"
+ *                   doctor:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: string
+ *                         example: "1"
+ *                       name:
+ *                         type: string
+ *                         example: Dr. John Doe
+ *       401:
+ *         description: Unauthorized - user is not authenticated
+ *       500:
+ *         description: Internal server error
  */
 router.get(
   "/my",
@@ -96,6 +132,52 @@ router.post(
   "/",
   authenticate,
   appointmentController.createAppointment
+);
+
+
+/**
+ * @swagger
+ * /api/appointments/{id}/cancel:
+ *   put:
+ *     summary: Cancel an appointment
+ *     description: Cancels an existing appointment by its ID.
+ *     tags: [Appointments]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: Appointment ID
+ *         schema:
+ *           type: string
+ *           example: "1"
+ *     responses:
+ *       200:
+ *         description: Appointment cancelled successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Appointment cancelled successfully
+ *       400:
+ *         description: Appointment already cancelled
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden - not your appointment
+ *       404:
+ *         description: Appointment not found
+ *       500:
+ *         description: Internal server error
+ */
+router.put(
+  "/:id/cancel",
+  authenticate,
+  appointmentController.cancelAppointment
 );
 
 module.exports = router;

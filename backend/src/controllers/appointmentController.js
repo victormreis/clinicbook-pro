@@ -112,3 +112,52 @@ exports.getMyAppointments = async (req, res) => {
 
   }
 };
+
+
+exports.cancelAppointment = async (req, res) => {
+  try {
+
+    const { id } = req.params;
+
+    const appointment = await Appointment.findByPk(id);
+
+    // 1. Check if exists
+    if (!appointment) {
+      return res.status(404).json({
+        message: "Appointment not found"
+      });
+    }
+
+    // 2. Check ownership
+    if (appointment.userId !== req.user.id) {
+      return res.status(403).json({
+        message: "You can only cancel your own appointments"
+      });
+    }
+
+    // 3. Check if already cancelled
+    if (appointment.status === "cancelled") {
+      return res.status(400).json({
+        message: "Appointment already cancelled"
+      });
+    }
+
+    // 4. Update status
+    await appointment.update({
+      status: "cancelled"
+    });
+
+    res.status(200).json({
+      message: "Appointment cancelled successfully"
+    });
+
+  } catch (error) {
+
+    console.error(error);
+
+    res.status(500).json({
+      message: "Server error"
+    });
+
+  }
+};
