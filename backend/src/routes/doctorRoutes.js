@@ -72,6 +72,42 @@ router.get(
 
 /**
  * @swagger
+ * /api/doctors/{doctorId}/available-times:
+ *   get:
+ *     summary: Get available appointment times for a doctor
+ *     tags: [Doctors]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: doctorId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Doctor ID
+ *       - in: query
+ *         name: date
+ *         required: true
+ *         schema:
+ *           type: string
+ *           example: 2026-04-10
+ *         description: Date to check availability
+ *     responses:
+ *       200:
+ *         description: List of available times
+ */
+router.get(
+  "/:doctorId/available-times",
+  authenticate,
+  doctorController.getAvailableTimes
+);
+
+
+
+
+
+/**
+ * @swagger
  * /api/doctors:
  *   post:
  *     summary: Create a doctor and assign a specialty (Admin only)
