@@ -1,0 +1,24 @@
+<section class="specialty-container">
+  <h2>Medical Specialties</h2>
+  <p>Select a specialty to find the right care for you.</p>
+
+  @if (isLoading()) {
+    <div class="loading">Loading specialties...</div>
+  } @else if (error()) {
+    <div class="error-message">{{ error() }}</div>
+  } @else {
+    <div class="specialty-grid">
+      @for (item of specialties(); track item.id) {
+        <article class="specialty-card">
+          <h3>{{ item.name }}</h3>
+          @if (item.description) {
+            <p>{{ item.description }}</p>
+          }
+          <button class="primary-btn">View Doctors</button>
+        </article>
+      } @empty {
+        <p>No specialties available at the moment.</p>
+      }
+    </div>
+  }
+</section>

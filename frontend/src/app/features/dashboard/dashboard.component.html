@@ -7,6 +7,10 @@
         Edit Profile
       </button>
 
+      <button type="button" routerLink="/specialties" class="primary-btn">
+        View Specialties
+      </button>
+
       @if (currentUser()?.role === 'admin') {
         <button type="button" routerLink="/admin/users" class="primary-btn">
           Manage System Users

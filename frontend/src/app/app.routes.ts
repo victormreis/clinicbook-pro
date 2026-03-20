@@ -34,6 +34,12 @@ export const routes: Routes = [
     canActivate: [authGuard, adminGuard],
     loadComponent: () => import('./features/admin/user-list/user-list.component').then((m) => m.UserListComponent),
   },
+
+  {
+    path: 'specialties',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/specialties/specialty-list.component').then((m) => m.SpecialtyListComponent),
+  },
   {
     path: '**',
     redirectTo: 'dashboard'
