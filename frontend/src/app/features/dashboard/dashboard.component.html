@@ -15,6 +15,10 @@
         <button type="button" routerLink="/admin/users" class="primary-btn">
           Manage System Users
         </button>
+
+        <button type="button" routerLink="/admin/specialties/new" class="primary-btn">
+          Add New Specialty
+        </button>
       }
 
       <button type="button" (click)="logout()" [disabled]="isSubmitting()">

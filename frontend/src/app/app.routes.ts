@@ -41,6 +41,12 @@ export const routes: Routes = [
   },
 
   {
+    path: 'admin/specialties/new',
+    canActivate: [authGuard, adminGuard],
+    loadComponent: () => import('./features/admin/specialty-form/specialty-form.component').then((m) => m.SpecialtyForm),
+  },
+
+  {
     path: 'specialties',
     canActivate: [authGuard],
     loadComponent: () => import('./features/specialties/specialty-list.component').then((m) => m.SpecialtyListComponent),
