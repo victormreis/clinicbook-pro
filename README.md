@@ -12,6 +12,19 @@ This backend provides:
 - **US-04:** Update user profile (keep account details accurate)  
 - **US-05:** Admin user management (maintain system integrity)  
 
+- **US-06:** View medical specialties (choose the type of service needed)  
+- **US-07:** View doctors by specialty (select an appropriate doctor)  
+- **US-08:** Admin adds medical specialties (keep system updated)  
+- **US-09:** Admin adds doctors and assigns specialties (enable proper booking)  
+- **US-10:** Admin edits/removes doctors (avoid outdated information)  
+
+- **US-11:** View available appointment times (choose suitable slot)  
+- **US-12:** Book an appointment (secure a consultation)  
+- **US-13:** Cancel an appointment (update schedule)  
+- **US-14:** Prevent double booking (avoid overlapping appointments)  
+- **US-15:** View upcoming appointments (stay organized) 
+- 
+
 All endpoints are fully implemented, tested via Postman, and documented with **Swagger** for easy exploration.
 
 ---
