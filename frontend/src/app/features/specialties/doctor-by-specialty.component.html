@@ -1,0 +1,26 @@
+<section class="doctor-container">
+  <header>
+    <button routerLink="/specialties" class="back-link">← Back to Specialties</button>
+    <h2>Available Doctors</h2>
+  </header>
+
+  @if (isLoading()) {
+    <div class="loading">Finding available doctors...</div>
+  } @else {
+    <div class="doctor-grid">
+      @for (doc of doctors(); track doc.id) {
+        <article class="doctor-card">
+          <div class="doctor-info">
+            <h3>Dr. {{ doc.name }}</h3>
+            <p>{{ doc.bio || 'No biography available.' }}</p>
+          </div>
+          <button class="primary-btn" [routerLink]="['/appointments/book', doc.id]">
+            Book Appointment
+          </button>
+        </article>
+      } @empty {
+        <p class="empty-msg">No doctors found for this specialty at this time.</p>
+      }
+    </div>
+  }
+</section>

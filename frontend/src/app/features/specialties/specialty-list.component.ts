@@ -1,11 +1,12 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { SpecialtyService, Specialty } from '../../core/specialty.service';
 
 @Component({
   selector: 'app-specialty-list',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './specialty-list.component.html',
   styleUrl: './specialty-list.component.css'
 })
