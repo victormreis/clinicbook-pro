@@ -19,7 +19,13 @@
         <button type="button" routerLink="/admin/specialties/new" class="primary-btn">
           Add New Specialty
         </button>
-      }
+
+        <button type="button" routerLink="/admin/doctors/new" class="primary-btn">
+            Add New Doctor
+        </button>
+
+        
+        }
 
       <button type="button" (click)="logout()" [disabled]="isSubmitting()">
         {{ isSubmitting() ? 'Logging out...' : 'Logout' }}

@@ -1,0 +1,38 @@
+<section class="admin-form-container">
+  <h2>Add New Doctor</h2>
+
+  <form (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label>First Name</label>
+      <input type="text" [(ngModel)]="firstName" name="firstName" required>
+    </div>
+
+    <div class="form-group">
+      <label>Last Name</label>
+      <input type="text" [(ngModel)]="lastName" name="lastName" required>
+    </div>
+
+    <div class="form-group">
+      <label>Email Address</label>
+      <input type="email" [(ngModel)]="email" name="email" required>
+    </div>
+
+    <div class="form-group">
+      <label>Assign Specialty</label>
+      <select [(ngModel)]="selectedSpecialtyId" name="specialtyId" required>
+        <option [ngValue]="null">Select a specialty...</option>
+        @for (item of specialties(); track item.id) {
+          <option [ngValue]="item.id">{{ item.name }}</option>
+        }
+      </select>
+    </div>
+
+    @if (errorMessage()) {
+      <p class="error-msg">{{ errorMessage() }}</p>
+    }
+
+    <button type="submit" class="primary-btn" [disabled]="!selectedSpecialtyId">
+      Add Doctor
+    </button>
+  </form>
+</section>

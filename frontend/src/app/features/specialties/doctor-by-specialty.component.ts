@@ -1,36 +1,56 @@
-import { Component, inject, OnInit, signal } from "@angular/core";
-import { CommonModule } from "@angular/common";
-import { ActivatedRoute, RouterModule } from "@angular/router";
-import { DoctorService, Doctor } from "../../core/doctor.service";
+import { Component, inject, OnInit, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { DoctorService, Doctor } from '../../core/doctor.service';
 
 @Component({
-    selector: "app-doctor-by-specialty",
-    imports: [CommonModule, RouterModule],
-    template: './doctor-by-specialty.component.html',
-    styleUrl: './doctor-by-specialty.component.css'
+  selector: 'app-doctor-by-specialty',
+  standalone: true,
+  imports: [CommonModule, RouterLink],
+  templateUrl: './doctor-by-specialty.component.html',
+  styleUrl: './doctor-by-specialty.component.css'
 })
-
 export class DoctorBySpecialtyComponent implements OnInit {
-  private readonly route = inject(DoctorService);
-  private readonly doctorService = inject(DoctorService);
+  // Injecting dependencies
+  private route = inject(ActivatedRoute);
+  private doctorService = inject(DoctorService);
 
-  readonly doctors = signal<Doctor[]>([]);
-  readonly isLoading = signal(true);
-  readonly specialtyName = signal<string>("Specialty");
+  // State management using Signals
+  doctors = signal<Doctor[]>([]);
+  isLoading = signal<boolean>(true);
+  errorMessage = signal<string | null>(null);
 
   ngOnInit(): void {
-    const id = Number(this.route.snapshot.paramMap.get("id"));
-    if (id) {
-      this.doctorService.getDoctorsBySpeciality(id).subscribe({
-        next: (data) => {
-          this.doctors.set(data);
-          this.isLoading.set(false);
-        },
-        error: (err) => {
-          console.error("Error fetching doctors:", err);
-          this.isLoading.set(false);
-        }
-      });
+
+    const idFromRoute = this.route.snapshot.paramMap.get('id') ||
+                        this.route.snapshot.paramMap.get('specialtyId'); // Try both 'id' and 'specialtyId' as route parameters
+
+    const specialtyId = Number(idFromRoute);
+ 
+   console.log('Extracted specialty ID from route:', specialtyId); 
+
+    if (!isNaN(specialtyId) && specialtyId > 0) {
+    this.fetchDoctors(specialtyId);
+   } else {
+    this.errorMessage.set('Could not determine the specialty category.');
+    this.isLoading.set(false);
     }
+  }
+
+  private fetchDoctors(id: number): void {
+    this.doctorService.getDoctorsBySpecialty(id).subscribe({
+      next: (data) => {
+        
+        console.log('Doctors received for specialty ' + id + ':', data);
+        
+        this.doctors.set(data);
+        this.isLoading.set(false);
+      },
+      error: (err) => {
+        console.error('Error fetching doctors:', err);
+        this.errorMessage.set('Failed to load doctors. Please try again later.');
+        this.isLoading.set(false);
+      }
+    });
   }
 }

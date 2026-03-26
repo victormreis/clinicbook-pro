@@ -1,0 +1,107 @@
+/* Container & Header */
+.doctor-container {
+  max-width: 1200px;
+  margin: 2.5rem auto;
+  padding: 0 1.5rem;
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+header {
+  margin-bottom: 2rem;
+  border-bottom: 2px solid #f0f2f5;
+  padding-bottom: 1rem;
+}
+
+.doctor-container h2 {
+  color: #2c3e50;
+  font-size: 1.8rem;
+  margin: 0.5rem 0 0;
+}
+
+/* Navigation Link */
+.back-link {
+  background: none;
+  border: 1px solid #bdc3c7;
+  color: #7f8c8d;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 0.9rem;
+  display: inline-block;
+  transition: all 0.2s ease;
+}
+
+.back-link:hover {
+  border-color: #3498db;
+  color: #3498db;
+  background-color: #f7fbfe;
+}
+
+/* Grid System */
+.doctor-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2rem;
+}
+
+/* Doctor Card */
+.doctor-card {
+  background: #ffffff;
+  border: 1px solid #eef2f3;
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Pins button to bottom */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.doctor-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+  border-color: #27ae60; /* Green highlight for doctors */
+}
+
+/* Info Styling */
+.doctor-info h3 {
+  margin: 0 0 1rem 0;
+  color: #2c3e50;
+  font-size: 1.3rem;
+  border-left: 4px solid #27ae60;
+  padding-left: 0.75rem;
+}
+
+.doctor-info p {
+  color: #5d6d7e;
+  font-size: 0.95rem;
+  margin: 0.4rem 0;
+  line-height: 1.4;
+}
+
+/* Action Button */
+.primary-btn {
+  margin-top: 1.5rem;
+  background-color: #27ae60; /* Green for booking */
+  color: white;
+  border: none;
+  padding: 0.9rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  width: 100%;
+}
+
+.primary-btn:hover {
+  background-color: #219150;
+}
+
+/* States */
+.loading, .empty-msg {
+  text-align: center;
+  padding: 4rem;
+  color: #7f8c8d;
+  font-style: italic;
+}

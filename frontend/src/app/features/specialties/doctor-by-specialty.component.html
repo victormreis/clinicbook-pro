@@ -12,7 +12,8 @@
         <article class="doctor-card">
           <div class="doctor-info">
             <h3>Dr. {{ doc.name }}</h3>
-            <p>{{ doc.bio || 'No biography available.' }}</p>
+            <p>Email: {{ doc.email }}</p>
+            <p>Consultation Duration: {{ doc.consultationDuration }} mins</p>
           </div>
           <button class="primary-btn" [routerLink]="['/appointments/book', doc.id]">
             Book Appointment

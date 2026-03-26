@@ -1,0 +1,98 @@
+/* Main container matching the admin form standard */
+.admin-form-container {
+  max-width: 650px;
+  margin: 2.5rem auto;
+  padding: 2.5rem;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.admin-form-container h2 {
+  color: #2c3e50;
+  margin-bottom: 2rem;
+  font-size: 1.6rem;
+  border-bottom: 2px solid #f0f2f5;
+  padding-bottom: 0.75rem;
+  text-align: center;
+}
+
+/* Form group and label styling */
+.form-group {
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-weight: 600;
+  margin-bottom: 0.6rem;
+  color: #34495e;
+  font-size: 0.95rem;
+}
+
+/* Input and Select styling */
+.form-group input,
+.form-group select {
+  padding: 0.85rem;
+  border: 1px solid #dcdfe6;
+  border-radius: 8px;
+  font-size: 1rem;
+  background-color: #fcfcfc;
+  transition: all 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #3498db;
+  background-color: #fff;
+  box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.15);
+}
+
+/* Specific styling for the specialty dropdown */
+.form-group select {
+  cursor: pointer;
+  appearance: none; /* Removes default arrow in some browsers */
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1em;
+}
+
+/* Error message box */
+.error-msg {
+  color: #c0392b;
+  background-color: #fdeaea;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+  border-left: 4px solid #e74c3c;
+}
+
+/* Button layout */
+.primary-btn {
+  width: 100%;
+  padding: 1rem;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.primary-btn:hover:not(:disabled) {
+  background-color: #2980b9;
+}
+
+.primary-btn:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.primary-btn:disabled {
+  background-color: #bdc3c7;
+  cursor: not-allowed;
+}

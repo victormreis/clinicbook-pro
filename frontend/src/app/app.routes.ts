@@ -59,6 +59,12 @@ export const routes: Routes = [
   },
 
   {
+    path: 'admin/doctors/new',
+    canActivate: [authGuard, adminGuard],
+    loadComponent: () => import('./features/admin/doctor-form/doctor-form.component').then((m) => m.DoctorFormComponent),
+  },
+
+  {
     path: '**',
     redirectTo: 'dashboard'
   }
