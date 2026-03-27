@@ -31,4 +31,12 @@ export class DoctorService {
         { headers: this.getHeaders() }
         );
     }
+
+    updateDoctor(id: number, doctor: Doctor): Observable<any> {
+        return this.http.put(`${this.apiUrl}/${id}`, doctor, { headers: this.getHeaders() });
+    }
+
+    deleteDoctor(id: number): Observable<any> {
+        return this.http.delete(`${this.apiUrl}/${id}`, { headers: this.getHeaders() });
+    }
 }
