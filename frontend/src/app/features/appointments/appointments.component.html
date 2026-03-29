@@ -15,7 +15,10 @@
 
   @if (noticeMessage()) {
     <div class="notice" [class.notice-error]="noticeTone() === 'error'" [class.notice-success]="noticeTone() === 'success'">
-      {{ noticeMessage() }}
+      <span>{{ noticeMessage() }}</span>
+      <button type="button" class="notice-close" (click)="clearNotice()" aria-label="Dismiss message">
+        Close
+      </button>
     </div>
   }
 
@@ -49,11 +52,17 @@
               </option>
             }
           </select>
+          @if (bookingForm.controls.doctorId.touched && bookingForm.controls.doctorId.invalid) {
+            <small class="field-message error-text">Please choose a doctor before booking.</small>
+          }
         </label>
 
         <label class="field">
           <span>Date</span>
           <input type="date" formControlName="appointmentDate" [min]="today" />
+          @if (bookingForm.controls.appointmentDate.touched && bookingForm.controls.appointmentDate.invalid) {
+            <small class="field-message error-text">Please choose a valid appointment date.</small>
+          }
         </label>
 
         <div class="slot-picker">
@@ -77,6 +86,10 @@
                 </label>
               }
             </div>
+          }
+
+          @if (bookingForm.controls.appointmentTime.touched && bookingForm.controls.appointmentTime.invalid) {
+            <small class="field-message error-text">Please choose an available time slot.</small>
           }
         </div>
 

@@ -1,0 +1,154 @@
+<section class="admin-appointments-shell">
+  <div class="page-header">
+    <div>
+      <p class="eyebrow">Admin Schedule Tools</p>
+      <h1>Manage appointment schedules</h1>
+      <p class="subcopy">
+        Review all bookings, reschedule consultations, update status, and cancel appointments when needed.
+      </p>
+    </div>
+
+    <button type="button" routerLink="/dashboard" class="secondary-btn">
+      Back to Dashboard
+    </button>
+  </div>
+
+  @if (noticeMessage()) {
+    <div class="notice" [class.notice-error]="noticeTone() === 'error'" [class.notice-success]="noticeTone() === 'success'">
+      <span>{{ noticeMessage() }}</span>
+      <button type="button" class="notice-close" (click)="clearNotice()" aria-label="Dismiss message">
+        Close
+      </button>
+    </div>
+  }
+
+  <div class="management-grid">
+    <article class="panel">
+      <div class="panel-heading">
+        <div>
+          <h2>Schedule editor</h2>
+          <p>Select an appointment below to reschedule it or change its status.</p>
+        </div>
+      </div>
+
+      @if (!editingAppointmentId()) {
+        <p class="empty-state">Choose an appointment from the list to edit its details.</p>
+      } @else {
+        <form [formGroup]="appointmentForm" (ngSubmit)="saveAppointment()" class="stack-form">
+          <label class="field">
+            <span>Doctor</span>
+            <select formControlName="doctorId">
+              <option [ngValue]="0">Choose a doctor</option>
+              @for (doctor of doctors(); track trackById($index, doctor)) {
+                <option [ngValue]="doctor.id">{{ doctor.name }}</option>
+              }
+            </select>
+          </label>
+
+          <label class="field">
+            <span>Date</span>
+            <input type="date" formControlName="appointmentDate" />
+          </label>
+
+          <label class="field">
+            <span>Time</span>
+            <input type="time" formControlName="appointmentTime" />
+          </label>
+
+          <label class="field">
+            <span>Status</span>
+            <select formControlName="status">
+              <option value="scheduled">Scheduled</option>
+              <option value="completed">Completed</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+          </label>
+
+          <div class="form-actions">
+            <button type="submit" class="primary-btn" [disabled]="appointmentForm.invalid || isSaving()">
+              {{ isSaving() ? 'Saving...' : 'Update Appointment' }}
+            </button>
+            <button type="button" class="secondary-btn" (click)="resetEditing()">
+              Cancel Edit
+            </button>
+          </div>
+        </form>
+      }
+    </article>
+
+    <article class="panel">
+      <div class="panel-heading">
+        <div>
+          <h2>Filters</h2>
+          <p>Narrow the list to review schedules by status or doctor.</p>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <div class="pill-group">
+          <button type="button" [class.active]="statusFilter() === 'all'" (click)="setStatusFilter('all')">All</button>
+          <button type="button" [class.active]="statusFilter() === 'scheduled'" (click)="setStatusFilter('scheduled')">Scheduled</button>
+          <button type="button" [class.active]="statusFilter() === 'completed'" (click)="setStatusFilter('completed')">Completed</button>
+          <button type="button" [class.active]="statusFilter() === 'cancelled'" (click)="setStatusFilter('cancelled')">Cancelled</button>
+        </div>
+
+        <label class="field">
+          <span>Doctor</span>
+          <select [value]="doctorFilter()" (change)="updateDoctorFilter($any($event.target).value)">
+            <option value="0">All doctors</option>
+            @for (doctor of doctors(); track trackById($index, doctor)) {
+              <option [value]="doctor.id">{{ doctor.name }}</option>
+            }
+          </select>
+        </label>
+      </div>
+    </article>
+  </div>
+
+  <article class="panel list-panel">
+    <div class="panel-heading">
+      <div>
+        <h2>All appointments</h2>
+        <p>Includes patient details, assigned doctor, timing, and current status.</p>
+      </div>
+    </div>
+
+    @if (isLoading()) {
+      <p class="empty-state">Loading appointments...</p>
+    } @else if (!filteredAppointments().length) {
+      <p class="empty-state">No appointments match the current filters.</p>
+    } @else {
+      <div class="appointment-list">
+        @for (appointment of filteredAppointments(); track trackById($index, appointment)) {
+          <article class="appointment-card">
+            <div class="appointment-copy">
+              <h3>{{ appointment.user?.name || 'Patient' }}</h3>
+              <p>{{ appointment.user?.email || 'No email provided' }}</p>
+              <p>{{ appointment.doctor?.name || 'Doctor' }} • {{ formatAppointmentDate(appointment.appointmentDate) }} at {{ formatAppointmentTime(appointment.appointmentTime) }}</p>
+            </div>
+
+            <div class="appointment-meta">
+              <span class="status-badge" [class.cancelled]="appointment.status === 'cancelled'" [class.completed]="appointment.status === 'completed'">
+                {{ appointment.status === 'booked' ? 'scheduled' : appointment.status }}
+              </span>
+
+              <div class="card-actions">
+                <button type="button" class="secondary-btn" (click)="editAppointment(appointment)">
+                  Edit
+                </button>
+                <button
+                  type="button"
+                  class="danger-btn"
+                  (click)="cancelAppointment(appointment)"
+                  [disabled]="appointment.status === 'cancelled' || cancellingAppointmentId() === appointment.id"
+                >
+                  {{ cancellingAppointmentId() === appointment.id ? 'Cancelling...' : 'Cancel' }}
+                </button>
+              </div>
+            </div>
+          </article>
+        }
+      </div>
+    }
+  </article>
+</section>

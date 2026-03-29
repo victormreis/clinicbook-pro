@@ -1,6 +1,7 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
 const Doctor = require("./Doctor");
+const User = require("./User");
 
 const Appointment = sequelize.define("Appointment", {
   appointmentDate: {
@@ -13,7 +14,7 @@ const Appointment = sequelize.define("Appointment", {
   },
   status: {
     type: DataTypes.STRING,
-    defaultValue: "booked"
+    defaultValue: "scheduled"
   },
   userId: {
     type: DataTypes.INTEGER,
@@ -28,6 +29,11 @@ const Appointment = sequelize.define("Appointment", {
 Appointment.belongsTo(Doctor, {
   foreignKey: "doctorId",
   as: "doctor"
+});
+
+Appointment.belongsTo(User, {
+  foreignKey: "userId",
+  as: "user"
 });
 
 module.exports = Appointment;

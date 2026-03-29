@@ -23,9 +23,25 @@ This backend provides:
 - **US-13:** Cancel an appointment (update schedule)  
 - **US-14:** Prevent double booking (avoid overlapping appointments)  
 - **US-15:** View upcoming appointments (stay organized) 
-- 
+- **US-16:** Admin view of appointments
+- **US-17:** Admin schedule management
+- **US-18:** Admin appointment cancelation
+- **US-19:** Admin handle schedule
+- **US-20:** Admin update appointment details
+- **US-21:** User confirmation message
+- **US-22:** User clear error message
+- **US-23:** User responsive application
+- **US-24:** User simple interface
+- **US-25:** System data validation
+- **US-26:** Team member tracking user stories
+- **US-27:** Team member unique user ID
+- **US-28:** Team member prioritize user stories
+- **US-29:** Team member update story status
+- **US-30:** Team member documentation of backlog
 
 All endpoints are fully implemented, tested via Postman, and documented with **Swagger** for easy exploration.
+
+Backlog tracking and user story ownership are documented in [docs/user-story-backlog.md](docs/user-story-backlog.md).
 
 ---
 
