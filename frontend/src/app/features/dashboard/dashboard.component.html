@@ -12,6 +12,10 @@
       </button>
 
       @if (currentUser()?.role === 'admin') {
+        <button type="button" routerLink="/admin/clinic" class="secondary-btn">
+          Manage Clinic Directory
+        </button>
+
         <button type="button" routerLink="/admin/users" class="primary-btn">
           Manage System Users
         </button>
