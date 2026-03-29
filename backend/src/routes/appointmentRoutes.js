@@ -4,6 +4,7 @@ const router = express.Router();
 const appointmentController = require("../controllers/appointmentController");
 
 const { authenticate } = require("../middleware/authMiddleware");
+const { authorizeAdmin } = require("../middleware/roleMiddleware");
 
 
 
@@ -59,6 +60,13 @@ router.get(
   "/my",
   authenticate,
   appointmentController.getMyAppointments
+);
+
+router.get(
+  "/admin",
+  authenticate,
+  authorizeAdmin,
+  appointmentController.getAllAppointmentsForAdmin
 );
 
 /**
@@ -178,6 +186,20 @@ router.put(
   "/:id/cancel",
   authenticate,
   appointmentController.cancelAppointment
+);
+
+router.put(
+  "/:id/admin-cancel",
+  authenticate,
+  authorizeAdmin,
+  appointmentController.adminCancelAppointment
+);
+
+router.put(
+  "/:id/admin",
+  authenticate,
+  authorizeAdmin,
+  appointmentController.adminUpdateAppointment
 );
 
 module.exports = router;

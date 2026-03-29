@@ -213,7 +213,10 @@ exports.getAvailableTimes = async (req, res) => {
     const appointments = await Appointment.findAll({
       where: {
         doctorId,
-        appointmentDate: date
+        appointmentDate: date,
+        status: {
+          [Op.in]: ["scheduled", "booked"]
+        }
       }
     });
 

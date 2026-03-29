@@ -48,6 +48,14 @@ export const routes: Routes = [
       )
   },
   {
+    path: 'admin/appointments',
+    canActivate: [authGuard, adminGuard],
+    loadComponent: () =>
+      import('./features/admin/appointments-management/appointments-management.component').then(
+        (m) => m.AppointmentsManagementComponent
+      )
+  },
+  {
     path: '**',
     redirectTo: 'dashboard'
   }

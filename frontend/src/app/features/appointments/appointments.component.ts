@@ -145,6 +145,10 @@ export class AppointmentsComponent {
       });
   }
 
+  clearNotice(): void {
+    this.noticeMessage.set('');
+  }
+
   trackById(_: number, item: Doctor | Specialty | Appointment): number {
     return item.id;
   }
@@ -283,7 +287,7 @@ export class AppointmentsComponent {
   }
 
   private isUpcoming(appointment: Appointment): boolean {
-    if (appointment.status !== 'scheduled') {
+    if (!['scheduled', 'booked'].includes(appointment.status)) {
       return false;
     }
 
