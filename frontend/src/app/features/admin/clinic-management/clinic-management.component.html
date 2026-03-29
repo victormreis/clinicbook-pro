@@ -1,0 +1,157 @@
+<section class="clinic-shell">
+  <div class="page-header">
+    <div>
+      <p class="eyebrow">Admin Clinic Tools</p>
+      <h1>Manage specialties and doctors</h1>
+      <p class="subcopy">
+        Keep the clinic directory current so patients can book against accurate specialties and doctor profiles.
+      </p>
+    </div>
+
+    <button type="button" routerLink="/dashboard" class="secondary-btn">
+      Back to Dashboard
+    </button>
+  </div>
+
+  @if (noticeMessage()) {
+    <div class="notice" [class.notice-error]="noticeTone() === 'error'" [class.notice-success]="noticeTone() === 'success'">
+      {{ noticeMessage() }}
+    </div>
+  }
+
+  <div class="summary-grid">
+    <article class="summary-card">
+      <span class="summary-label">Specialties</span>
+      <strong>{{ specialtyCount() }}</strong>
+    </article>
+
+    <article class="summary-card">
+      <span class="summary-label">Doctors</span>
+      <strong>{{ doctorCount() }}</strong>
+    </article>
+  </div>
+
+  <div class="management-grid">
+    <article class="panel">
+      <div class="panel-heading">
+        <div>
+          <h2>Add medical specialty</h2>
+          <p>Use this when the clinic starts offering a new service category.</p>
+        </div>
+      </div>
+
+      <form [formGroup]="specialtyForm" (ngSubmit)="saveSpecialty()" class="stack-form">
+        <label class="field">
+          <span>Specialty name</span>
+          <input type="text" formControlName="name" placeholder="Cardiology" />
+        </label>
+
+        <button type="submit" class="primary-btn" [disabled]="specialtyForm.invalid || isSavingSpecialty()">
+          {{ isSavingSpecialty() ? 'Saving...' : 'Add Specialty' }}
+        </button>
+      </form>
+
+      <div class="list-block">
+        <div class="list-header">
+          <h3>Current specialties</h3>
+        </div>
+
+        @if (isLoading()) {
+          <p class="empty-state">Loading specialties...</p>
+        } @else if (!specialties().length) {
+          <p class="empty-state">No specialties added yet.</p>
+        } @else {
+          <div class="tag-list">
+            @for (specialty of specialties(); track trackById($index, specialty)) {
+              <span class="tag">{{ specialty.name }}</span>
+            }
+          </div>
+        }
+      </div>
+    </article>
+
+    <article class="panel">
+      <div class="panel-heading">
+        <div>
+          <h2>{{ editingDoctorId() ? 'Edit doctor' : 'Add doctor' }}</h2>
+          <p>Assign each doctor to the right specialty so booking stays accurate.</p>
+        </div>
+      </div>
+
+      <form [formGroup]="doctorForm" (ngSubmit)="saveDoctor()" class="stack-form">
+        <label class="field">
+          <span>Doctor name</span>
+          <input type="text" formControlName="name" placeholder="Dr. Sarah Lee" />
+        </label>
+
+        <label class="field">
+          <span>Email</span>
+          <input type="email" formControlName="email" placeholder="doctor@clinicbook.com" />
+        </label>
+
+        <label class="field">
+          <span>Specialty</span>
+          <select formControlName="specialtyId">
+            <option [ngValue]="0">Choose a specialty</option>
+            @for (specialty of specialties(); track trackById($index, specialty)) {
+              <option [ngValue]="specialty.id">{{ specialty.name }}</option>
+            }
+          </select>
+        </label>
+
+        <div class="form-actions">
+          <button type="submit" class="primary-btn" [disabled]="doctorForm.invalid || isSavingDoctor()">
+            {{ isSavingDoctor() ? 'Saving...' : editingDoctorId() ? 'Save Changes' : 'Add Doctor' }}
+          </button>
+
+          @if (editingDoctorId()) {
+            <button type="button" class="secondary-btn" (click)="cancelEditing()">
+              Cancel Edit
+            </button>
+          }
+        </div>
+      </form>
+    </article>
+  </div>
+
+  <article class="panel directory-panel">
+    <div class="panel-heading">
+      <div>
+        <h2>Doctor directory</h2>
+        <p>Update or remove doctors here when clinic staffing changes.</p>
+      </div>
+    </div>
+
+    @if (isLoading()) {
+      <p class="empty-state">Loading doctors...</p>
+    } @else if (!doctors().length) {
+      <p class="empty-state">No doctors in the directory yet.</p>
+    } @else {
+      <div class="doctor-list">
+        @for (doctor of doctors(); track trackById($index, doctor)) {
+          <article class="doctor-card">
+            <div>
+              <h3>{{ doctor.name }}</h3>
+              <p>{{ doctor.email }}</p>
+              <span class="tag accent">{{ doctor.specialty?.name || 'Unassigned specialty' }}</span>
+            </div>
+
+            <div class="card-actions">
+              <button type="button" class="secondary-btn" (click)="editDoctor(doctor)">
+                Edit
+              </button>
+              <button
+                type="button"
+                class="danger-btn"
+                (click)="removeDoctor(doctor)"
+                [disabled]="deletingDoctorId() === doctor.id"
+              >
+                {{ deletingDoctorId() === doctor.id ? 'Removing...' : 'Remove' }}
+              </button>
+            </div>
+          </article>
+        }
+      </div>
+    }
+  </article>
+</section>

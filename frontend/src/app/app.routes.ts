@@ -40,6 +40,14 @@ export const routes: Routes = [
     loadComponent: () => import('./features/admin/user-list/user-list.component').then((m) => m.UserListComponent),
   },
   {
+    path: 'admin/clinic',
+    canActivate: [authGuard, adminGuard],
+    loadComponent: () =>
+      import('./features/admin/clinic-management/clinic-management.component').then(
+        (m) => m.ClinicManagementComponent
+      )
+  },
+  {
     path: '**',
     redirectTo: 'dashboard'
   }

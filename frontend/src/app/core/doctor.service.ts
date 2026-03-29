@@ -17,6 +17,26 @@ export interface Doctor {
   specialty?: Specialty;
 }
 
+export interface DoctorPayload {
+  name: string;
+  email: string;
+  specialtyId: number;
+}
+
+interface SpecialtyActionResponse {
+  message: string;
+  specialty: Specialty;
+}
+
+interface DoctorActionResponse {
+  message: string;
+  doctor: Doctor;
+}
+
+interface DeleteDoctorResponse {
+  message: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class DoctorService {
   private readonly http = inject(HttpClient);
@@ -40,6 +60,32 @@ export class DoctorService {
     return this.http.get<string[]>(`${this.doctorsApiUrl}/${doctorId}/available-times`, {
       headers: this.authService.getAuthHeaders(),
       params: { date }
+    });
+  }
+
+  createSpecialty(name: string): Observable<SpecialtyActionResponse> {
+    return this.http.post<SpecialtyActionResponse>(
+      this.specialtiesApiUrl,
+      { name },
+      { headers: this.authService.getAuthHeaders() }
+    );
+  }
+
+  createDoctor(payload: DoctorPayload): Observable<DoctorActionResponse> {
+    return this.http.post<DoctorActionResponse>(this.doctorsApiUrl, payload, {
+      headers: this.authService.getAuthHeaders()
+    });
+  }
+
+  updateDoctor(doctorId: number, payload: DoctorPayload): Observable<DoctorActionResponse> {
+    return this.http.put<DoctorActionResponse>(`${this.doctorsApiUrl}/${doctorId}`, payload, {
+      headers: this.authService.getAuthHeaders()
+    });
+  }
+
+  deleteDoctor(doctorId: number): Observable<DeleteDoctorResponse> {
+    return this.http.delete<DeleteDoctorResponse>(`${this.doctorsApiUrl}/${doctorId}`, {
+      headers: this.authService.getAuthHeaders()
     });
   }
 }
