@@ -94,6 +94,11 @@ export class AuthService {
     return this.http.delete<ActionResponse>(`${this.userApiUrl}/${userId}`, { headers });
   }
 
+  getAuthHeaders(): HttpHeaders {
+    const token = this.getStoredToken();
+    return token ? new HttpHeaders({ Authorization: `Bearer ${token}` }) : new HttpHeaders();
+  }
+
   // --- Existing Methods ---
   register(payload: RegisterPayload): Observable<PublicUser> {
     return this.http.post<RegisterResponse>(`${this.authApiUrl}/register`, payload).pipe(
