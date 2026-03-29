@@ -1,0 +1,158 @@
+<section class="appointments-shell">
+  <div class="page-header">
+    <div>
+      <p class="eyebrow">Appointments</p>
+      <h1>Book and manage your consultations</h1>
+      <p class="subcopy">
+        Pick a specialty, review live availability, and keep your upcoming visits in one place.
+      </p>
+    </div>
+
+    <button type="button" routerLink="/dashboard" class="secondary-btn">
+      Back to Dashboard
+    </button>
+  </div>
+
+  @if (noticeMessage()) {
+    <div class="notice" [class.notice-error]="noticeTone() === 'error'" [class.notice-success]="noticeTone() === 'success'">
+      {{ noticeMessage() }}
+    </div>
+  }
+
+  <div class="appointments-grid">
+    <article class="panel booking-panel">
+      <div class="panel-heading">
+        <div>
+          <h2>Find a suitable slot</h2>
+          <p>Available times refresh when you change the doctor or date.</p>
+        </div>
+      </div>
+
+      <form [formGroup]="bookingForm" (ngSubmit)="onBookAppointment()" class="booking-form">
+        <label class="field">
+          <span>Specialty</span>
+          <select formControlName="specialtyId">
+            <option [ngValue]="0">All specialties</option>
+            @for (specialty of specialties(); track trackById($index, specialty)) {
+              <option [ngValue]="specialty.id">{{ specialty.name }}</option>
+            }
+          </select>
+        </label>
+
+        <label class="field">
+          <span>Doctor</span>
+          <select formControlName="doctorId">
+            <option [ngValue]="0">Choose a doctor</option>
+            @for (doctor of filteredDoctors(); track trackById($index, doctor)) {
+              <option [ngValue]="doctor.id">
+                {{ doctor.name }} @if (doctor.specialty?.name) { - {{ doctor.specialty?.name }} }
+              </option>
+            }
+          </select>
+        </label>
+
+        <label class="field">
+          <span>Date</span>
+          <input type="date" formControlName="appointmentDate" [min]="today" />
+        </label>
+
+        <div class="slot-picker">
+          <div class="slot-picker-header">
+            <span>Available times</span>
+            @if (isLoadingTimes()) {
+              <small>Refreshing slots...</small>
+            }
+          </div>
+
+          @if (!bookingForm.controls.doctorId.value) {
+            <p class="empty-state compact">Select a doctor to see open times.</p>
+          } @else if (!availableTimes().length && !isLoadingTimes()) {
+            <p class="empty-state compact">No slots available for the selected date.</p>
+          } @else {
+            <div class="slot-list">
+              @for (time of availableTimes(); track time) {
+                <label class="slot-option">
+                  <input type="radio" formControlName="appointmentTime" [value]="time" />
+                  <span>{{ formatAppointmentTime(time) }}</span>
+                </label>
+              }
+            </div>
+          }
+        </div>
+
+        <button
+          type="submit"
+          class="primary-btn"
+          [disabled]="bookingForm.invalid || isBooking() || !availableTimes().length"
+        >
+          {{ isBooking() ? 'Booking...' : 'Book appointment' }}
+        </button>
+      </form>
+    </article>
+
+    <article class="panel">
+      <div class="panel-heading">
+        <div>
+          <h2>Upcoming appointments</h2>
+          <p>Your scheduled consultations stay visible here until they pass or are cancelled.</p>
+        </div>
+      </div>
+
+      @if (isLoadingAppointments()) {
+        <p class="empty-state">Loading your appointments...</p>
+      } @else if (!upcomingAppointments().length) {
+        <p class="empty-state">You do not have any upcoming appointments yet.</p>
+      } @else {
+        <div class="appointment-list">
+          @for (appointment of upcomingAppointments(); track trackById($index, appointment)) {
+            <article class="appointment-card">
+              <div>
+                <h3>{{ appointment.doctor?.name || 'Assigned doctor' }}</h3>
+                <p>{{ formatAppointmentDate(appointment.appointmentDate) }} at {{ formatAppointmentTime(appointment.appointmentTime) }}</p>
+              </div>
+
+              <button
+                type="button"
+                class="danger-btn"
+                (click)="cancelAppointment(appointment)"
+                [disabled]="cancellingAppointmentId() === appointment.id"
+              >
+                {{ cancellingAppointmentId() === appointment.id ? 'Cancelling...' : 'Cancel' }}
+              </button>
+            </article>
+          }
+        </div>
+      }
+    </article>
+  </div>
+
+  <article class="panel history-panel">
+    <div class="panel-heading">
+      <div>
+        <h2>Past and cancelled appointments</h2>
+        <p>Useful for checking what has already happened or what was removed from your schedule.</p>
+      </div>
+    </div>
+
+    @if (isLoadingAppointments()) {
+      <p class="empty-state">Loading history...</p>
+    } @else if (!appointmentHistory().length) {
+      <p class="empty-state">No past or cancelled appointments to show.</p>
+    } @else {
+      <div class="history-list">
+        @for (appointment of appointmentHistory(); track trackById($index, appointment)) {
+          <article class="history-row">
+            <div>
+              <h3>{{ appointment.doctor?.name || 'Assigned doctor' }}</h3>
+              <p>{{ formatAppointmentDate(appointment.appointmentDate) }} at {{ formatAppointmentTime(appointment.appointmentTime) }}</p>
+            </div>
+
+            <span class="status-badge" [class.cancelled]="appointment.status === 'cancelled'">
+              {{ appointment.status === 'cancelled' ? 'Cancelled' : 'Completed' }}
+            </span>
+          </article>
+        }
+      </div>
+    }
+  </article>
+</section>
