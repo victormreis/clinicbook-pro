@@ -62,6 +62,37 @@ router.get(
   appointmentController.getMyAppointments
 );
 
+/**
+ * @swagger
+ * /api/appointments/admin:
+ *   get:
+ *     summary: Get all appointments (Admin only)
+ *     tags: [Appointments]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of all scheduled appointments
+ *         content:
+ *           application/json:
+ *             example:
+ *               - id: 1
+ *                 appointmentDate: "2026-04-10"
+ *                 appointmentTime: "10:00"
+ *                 status: "booked"
+ *                 doctor:
+ *                   id: 1
+ *                   name: "Dr Smith"
+ *                   email: "smith@email.com"
+ *                 user:
+ *                   id: 2
+ *                   name: "Victor"
+ *                   email: "victor@email.com"
+ *       403:
+ *         description: Admin access required
+ *       500:
+ *         description: Server error
+ */
 router.get(
   "/admin",
   authenticate,

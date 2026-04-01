@@ -1,6 +1,7 @@
 const Doctor = require("../models/Doctor");
 const Specialty = require("../models/Specialty");
 const Appointment = require("../models/Appointment");
+const { Op } = require("sequelize");
 
 const CONSULTATION_DURATION = 30;
 
