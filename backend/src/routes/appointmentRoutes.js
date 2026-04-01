@@ -219,6 +219,23 @@ router.put(
   appointmentController.cancelAppointment
 );
 
+/**
+ * @swagger
+ * /api/appointments/{id}/admin-cancel:
+ *   put:
+ *     summary: Cancel appointment (Admin)
+ *     tags: [Appointments]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: Appointment ID
+ *     responses:
+ *       200:
+ *         description: Appointment cancelled successfully
+ */
 router.put(
   "/:id/admin-cancel",
   authenticate,
@@ -226,6 +243,23 @@ router.put(
   appointmentController.adminCancelAppointment
 );
 
+/**
+ * @swagger
+ * /api/appointments/{id}/admin-cancel:
+ *   put:
+ *     summary: Cancel appointment (Admin)
+ *     tags: [Appointments]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: Appointment ID
+ *     responses:
+ *       200:
+ *         description: Appointment cancelled successfully
+ */
 router.put(
   "/:id/admin",
   authenticate,
