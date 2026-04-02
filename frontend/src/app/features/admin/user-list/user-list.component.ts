@@ -13,10 +13,9 @@ import { AuthService, PublicUser } from '../../../core/auth.service';
 export class UserListComponent implements OnInit {
   private readonly authService = inject(AuthService);
   
-  // State management using Signals
+  // Signal to store the list of users
   readonly users = signal<PublicUser[]>([]);
-  readonly isLoading = signal(false);
-  readonly currentUser = this.authService.currentUser;
+  readonly isLoading = signal(true);
 
   ngOnInit(): void {
     this.loadUsers();
@@ -25,42 +24,17 @@ export class UserListComponent implements OnInit {
   loadUsers(): void {
     this.isLoading.set(true);
     this.authService.getAllUsers().subscribe({
-      next: (users: PublicUser[]) => {
-        this.users.set(users);
+      next: (data) => {
+        this.users.set(data);
         this.isLoading.set(false);
       },
-      error: (err) => {
-        console.error('Error fetching users:', err);
-        this.isLoading.set(false);
-        alert('Failed to load users. Verify you have administrator permissions.');
-      }
+      error: () => this.isLoading.set(false)
     });
   }
 
-  toggleRole(user: PublicUser): void {
-    if (!user.id) return;
-    
-    // Logic: If they are admin, change to user. If user, change to admin.
-    const newRole = user.role === 'admin' ? 'user' : 'admin';
-    
-    this.authService.updateUserRole(user.id, newRole).subscribe({
-      next: () => {
-        this.loadUsers(); // Refresh the table
-      },
-      error: (err) => alert(err.error?.message || 'Error updating role')
-    });
-  }
-
-  deleteUser(userId?: number): void {
-    if (!userId) return;
-
-    if (confirm('Are you sure? This user will be permanently removed from the system.')) {
-      this.authService.deleteUser(userId).subscribe({
-        next: () => {
-          this.loadUsers(); // Refresh the table
-        },
-        error: (err) => alert(err.error?.message || 'Error deleting user')
-      });
+  deleteUser(id: number): void {
+    if (confirm('Are you sure you want to delete this user?')) {
+      this.authService.deleteUser(id).subscribe(() => this.loadUsers());
     }
   }
 }

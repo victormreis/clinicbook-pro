@@ -1,54 +1,60 @@
-<section class="dashboard-shell">
-  <article class="dashboard-card" style="max-width: 900px;">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-      <h2>User Management</h2>
-      <button routerLink="/dashboard" class="secondary-btn">Back to Dashboard</button>
-    </div>
-
-    @if (isLoading()) {
-      <p>Loading system accounts...</p>
-    } @else {
-      <div style="overflow-x: auto;">
-        <table style="width: 100%; border-collapse: collapse; text-align: left;">
-          <thead>
-            <tr style="border-bottom: 2px solid #eee;">
-              <th style="padding: 10px;">Name</th>
-              <th style="padding: 10px;">Email</th>
-              <th style="padding: 10px;">Role</th>
-              <th style="padding: 10px; text-align: right;">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (user of users(); track user.id) {
-              <tr style="border-bottom: 1px solid #eee;">
-                <td style="padding: 10px;">{{ user.name || 'N/A' }}</td>
-                <td style="padding: 10px;">{{ user.email }}</td>
-                <td style="padding: 10px;">
-                  <span [style.color]="user.role === 'admin' ? '#2ecc71' : '#7f8c8d'" style="font-weight: bold;">
-                    {{ user.role | uppercase }}
-                  </span>
-                </td>
-                <td style="padding: 10px; text-align: right;">
-                  @if (user.id !== currentUser()?.id) {
-                    <button (click)="toggleRole(user)" style="margin-right: 10px; padding: 5px 10px;">
-                      Set as {{ user.role === 'admin' ? 'User' : 'Admin' }}
-                    </button>
-                    <button (click)="deleteUser(user.id)" style="background-color: #e74c3c; padding: 5px 10px;">
-                      Delete
-                    </button>
-                  } @else {
-                    <small><i>(You)</i></small>
-                  }
-                </td>
-              </tr>
-            } @empty {
-              <tr>
-                <td colspan="4" style="padding: 20px; text-align: center;">No other users found.</td>
-              </tr>
-            }
-          </tbody>
-        </table>
+<div class="admin-container">
+  <header class="page-header">
+    <div class="header-content">
+      <div class="header-top">
+        <button routerLink="/dashboard" class="btn-back">
+          ← Back to Dashboard
+        </button>
+        <h1>User Management</h1>
       </div>
-    }
-  </article>
-</section>
+      <p>Manage system access and roles for all registered members.</p>
+    </div>
+    <div class="user-count-badge">
+      Total Users: <strong>{{ users().length }}</strong>
+    </div>
+  </header>
+
+  <div class="table-card">
+    <div class="table-responsive">
+      <table class="modern-table">
+        <thead>
+          <tr>
+            <th>User Info</th>
+            <th>Email Address</th>
+            <th>Account Role</th>
+            <th class="text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (user of users(); track user.id) {
+            <tr>
+              <td>
+                <div class="user-info">
+                  <div class="initials">{{ user.name?.charAt(0) }}</div>
+                  <span>{{ user.name }}</span>
+                </div>
+              </td>
+              <td>{{ user.email }}</td>
+              <td>
+                <span class="role-badge" [class.admin]="user.role === 'admin'">
+                  {{ user.role }}
+                </span>
+              </td>
+              <td class="text-right">
+                <button (click)="deleteUser(user.id!)" class="btn-delete" title="Delete User">
+                  🗑️
+                </button>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="4" class="empty-state">
+                {{ isLoading() ? 'Loading users...' : 'No users found.' }}
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

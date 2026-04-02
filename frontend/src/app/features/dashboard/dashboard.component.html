@@ -1,33 +1,58 @@
-<section class="dashboard-shell">
-  <article class="dashboard-card">
-    <h1>Welcome, {{ firstName() }}!</h1>
-    
-    <div class="dashboard-actions">
-      <button type="button" routerLink="/appointments" class="primary-btn">
-        Manage Appointments
-      </button>
-
-      <button type="button" routerLink="/profile" class="secondary-btn">
-        Edit Profile
-      </button>
-
-      @if (currentUser()?.role === 'admin') {
-        <button type="button" routerLink="/admin/appointments" class="primary-btn">
-          Manage All Appointments
-        </button>
-
-        <button type="button" routerLink="/admin/clinic" class="secondary-btn">
-          Manage Clinic Directory
-        </button>
-
-        <button type="button" routerLink="/admin/users" class="primary-btn">
-          Manage System Users
-        </button>
-      }
-
-      <button type="button" (click)="logout()" [disabled]="isSubmitting()">
-        {{ isSubmitting() ? 'Logging out...' : 'Logout' }}
-      </button>
+<div class="dashboard-wrapper">
+  <aside class="dashboard-sidebar">
+    <div class="profile-header">
+      <div class="avatar-circle">{{ firstName().charAt(0) }}</div>
+      <h3>{{ firstName() }}</h3>
+      <span class="role-badge">{{ currentUser()?.role }}</span>
     </div>
-  </article>
-</section>
+
+    <nav class="sidebar-links">
+      <button routerLink="/appointments" class="nav-btn">Appointments</button>
+      <button routerLink="/profile" class="nav-btn">My Profile</button>
+      
+      @if (currentUser()?.role === 'admin') {
+        <div class="nav-divider">Administration</div>
+        <button routerLink="/admin/appointments" class="nav-btn">Global Schedule</button>
+        <button routerLink="/admin/clinic" class="nav-btn">Clinic Directory</button>
+        <button routerLink="/admin/users" class="nav-btn">User Management</button>
+      }
+    </nav>
+
+    <button class="logout-action" (click)="logout()" [disabled]="isSubmitting()">
+      {{ isSubmitting() ? 'Signing out...' : 'Logout' }}
+    </button>
+  </aside>
+
+  <main class="dashboard-content">
+    <header class="content-header">
+      <h1>Clinic Management Overview</h1>
+      <p class="subtitle">Live insights into your system's activity and scale.</p>
+    </header>
+
+    <section class="metrics-container">
+      @for (stat of dashboardStats(); track stat.label) {
+        <div class="metric-tile">
+          <span class="metric-symbol">{{ stat.icon }}</span>
+          <div class="metric-details">
+            <p class="label">{{ stat.label }}</p>
+            <p class="value">{{ stat.value }}</p>
+          </div>
+        </div>
+      }
+    </section>
+
+    <section class="action-panel">
+      <h2>Administrative Actions</h2>
+      <div class="action-grid">
+        <div class="action-card" routerLink="/admin/users">
+          <strong>Review Directory</strong>
+          <p>Access the full list of registered clinic users.</p>
+        </div>
+        <div class="action-card" routerLink="/admin/appointments">
+          <strong>Global Schedule</strong>
+          <p>View and manage all booked appointments system-wide.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
