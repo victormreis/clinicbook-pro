@@ -1,58 +1,88 @@
-<div class="dashboard-wrapper">
-  <aside class="dashboard-sidebar">
-    <div class="profile-header">
-      <div class="avatar-circle">{{ firstName().charAt(0) }}</div>
-      <h3>{{ firstName() }}</h3>
-      <span class="role-badge">{{ currentUser()?.role }}</span>
-    </div>
+<section class="dashboard-shell">
+  <article class="dashboard-card">
+    <div class="hero-panel">
+      <div class="hero-copy">
+        <p class="eyebrow">Clinic overview</p>
+        <h1>Welcome back, {{ firstName() }}.</h1>
+        <p class="hero-text">
+          Keep appointments, profile updates, and clinic operations moving from one cleaner
+          dashboard.
+        </p>
 
-    <nav class="sidebar-links">
-      <button routerLink="/appointments" class="nav-btn">Appointments</button>
-      <button routerLink="/profile" class="nav-btn">My Profile</button>
-      
-      @if (currentUser()?.role === 'admin') {
-        <div class="nav-divider">Administration</div>
-        <button routerLink="/admin/appointments" class="nav-btn">Global Schedule</button>
-        <button routerLink="/admin/clinic" class="nav-btn">Clinic Directory</button>
-        <button routerLink="/admin/users" class="nav-btn">User Management</button>
-      }
-    </nav>
-
-    <button class="logout-action" (click)="logout()" [disabled]="isSubmitting()">
-      {{ isSubmitting() ? 'Signing out...' : 'Logout' }}
-    </button>
-  </aside>
-
-  <main class="dashboard-content">
-    <header class="content-header">
-      <h1>Clinic Management Overview</h1>
-      <p class="subtitle">Live insights into your system's activity and scale.</p>
-    </header>
-
-    <section class="metrics-container">
-      @for (stat of dashboardStats(); track stat.label) {
-        <div class="metric-tile">
-          <span class="metric-symbol">{{ stat.icon }}</span>
-          <div class="metric-details">
-            <p class="label">{{ stat.label }}</p>
-            <p class="value">{{ stat.value }}</p>
-          </div>
-        </div>
-      }
-    </section>
-
-    <section class="action-panel">
-      <h2>Administrative Actions</h2>
-      <div class="action-grid">
-        <div class="action-card" routerLink="/admin/users">
-          <strong>Review Directory</strong>
-          <p>Access the full list of registered clinic users.</p>
-        </div>
-        <div class="action-card" routerLink="/admin/appointments">
-          <strong>Global Schedule</strong>
-          <p>View and manage all booked appointments system-wide.</p>
+        <div class="hero-pills">
+          <span>{{ currentUser()?.role === 'admin' ? 'Administrator access' : 'Patient workspace' }}</span>
+          <span>Secure session</span>
+          <span>Fast navigation</span>
         </div>
       </div>
+
+      <div class="hero-aside">
+        <div class="summary-card">
+          <strong>{{ currentUser()?.role === 'admin' ? 'Admin mode' : 'Personal mode' }}</strong>
+          <p>
+            {{ currentUser()?.role === 'admin'
+              ? 'Review schedules, manage clinic data, and keep staff workflows aligned.'
+              : 'Check your appointments and keep your details up to date.' }}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <section class="actions-section">
+      <div class="section-heading">
+        <h2>Quick actions</h2>
+        <p>Choose where you want to go next.</p>
+      </div>
+
+      <div class="action-grid">
+        <a routerLink="/appointments" class="action-card action-card-primary">
+          <span class="action-kicker">Appointments</span>
+          <h3>Manage Appointments</h3>
+          <p>View bookings, follow upcoming visits, and stay on top of your schedule.</p>
+        </a>
+
+        <a routerLink="/profile" class="action-card">
+          <span class="action-kicker">Account</span>
+          <h3>Edit Profile</h3>
+          <p>Update your personal information and keep your account details current.</p>
+        </a>
+      </div>
     </section>
-  </main>
-</div>
+
+    @if (currentUser()?.role === 'admin') {
+      <section class="actions-section">
+        <div class="section-heading">
+          <h2>Admin tools</h2>
+          <p>Everything needed to manage the clinic side of the system.</p>
+        </div>
+
+        <div class="action-grid admin-grid">
+          <a routerLink="/admin/appointments" class="action-card action-card-accent">
+            <span class="action-kicker">Scheduling</span>
+            <h3>Manage All Appointments</h3>
+            <p>Review all bookings, reschedule visits, and update appointment status.</p>
+          </a>
+
+          <a routerLink="/admin/clinic" class="action-card">
+            <span class="action-kicker">Directory</span>
+            <h3>Manage Clinic Directory</h3>
+            <p>Add or update doctors and specialties so the clinic record stays accurate.</p>
+          </a>
+
+          <a routerLink="/admin/users" class="action-card">
+            <span class="action-kicker">Access</span>
+            <h3>Manage System Users</h3>
+            <p>Review users and keep administrative access organized across the team.</p>
+          </a>
+        </div>
+      </section>
+    }
+
+    <div class="footer-bar">
+      <p>You are signed in and ready to continue.</p>
+      <button type="button" class="logout-btn" (click)="logout()" [disabled]="isSubmitting()">
+        {{ isSubmitting() ? 'Logging out...' : 'Logout' }}
+      </button>
+    </div>
+  </article>
+</section>

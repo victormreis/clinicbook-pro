@@ -1,7 +1,54 @@
 <section class="auth-shell">
+  <aside class="auth-hero">
+    <div class="brand-chip">ClinicBook</div>
+
+    <div class="hero-copy">
+      <span class="eyebrow">Built for smoother arrivals</span>
+      <h1>Give patients and staff a better start.</h1>
+      <p>
+        Create your account to manage bookings, reduce admin friction, and keep the clinic day
+        moving with confidence.
+      </p>
+    </div>
+
+    <div class="hero-highlights">
+      <div class="hero-stats">
+        <article class="stat-card">
+          <strong>Easy setup</strong>
+          <span>Get your clinic account ready in a few moments.</span>
+        </article>
+        <article class="stat-card">
+          <strong>Shared view</strong>
+          <span>Help staff stay synced on schedules and appointments.</span>
+        </article>
+        <article class="stat-card">
+          <strong>Less friction</strong>
+          <span>Reduce back-and-forth with a more organized workflow.</span>
+        </article>
+      </div>
+
+      <article class="quote-card">
+        <p>
+          “From registration to appointment management, everything feels cleaner and much easier to
+          explain to the team.”
+        </p>
+        <strong>Start with a simple account, then grow into the full workflow.</strong>
+      </article>
+    </div>
+  </aside>
+
   <form class="auth-card" [formGroup]="form" (ngSubmit)="submit()">
-    <h1>Create account</h1>
-    <p>Register to start using ClinicBook.</p>
+    <div class="form-copy">
+      <span class="eyebrow">Create your workspace</span>
+      <h1>Create account</h1>
+      <p>Register to start using ClinicBook and set up a cleaner front door for your clinic.</p>
+    </div>
+
+    <div class="form-benefits">
+      <span>Patient-ready flow</span>
+      <span>Secure access</span>
+      <span>Clinic coordination</span>
+    </div>
 
     <label>
       Full name
@@ -36,7 +83,7 @@
     }
 
     @if (authError()) {
-      <small>{{ authError() }}</small>
+      <small class="error-banner">{{ authError() }}</small>
     }
 
     <button type="submit" [disabled]="isSubmitting()">
