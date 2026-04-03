@@ -1,7 +1,54 @@
 <section class="auth-shell">
+  <aside class="auth-hero">
+    <div class="brand-chip">ClinicBook</div>
+
+    <div class="hero-copy">
+      <span class="eyebrow">One place for every appointment</span>
+      <h1>Make care feel calm from the very first click.</h1>
+      <p>
+        Manage bookings, schedules, and patient communication in a cleaner workflow built for
+        modern clinics.
+      </p>
+    </div>
+
+    <div class="hero-highlights">
+      <div class="hero-stats">
+        <article class="stat-card">
+          <strong>Fast</strong>
+          <span>Jump back into your day without a messy sign-in flow.</span>
+        </article>
+        <article class="stat-card">
+          <strong>Clear</strong>
+          <span>See appointments, schedules, and actions in one place.</span>
+        </article>
+        <article class="stat-card">
+          <strong>Secure</strong>
+          <span>Keep patient access organized and protected.</span>
+        </article>
+      </div>
+
+      <article class="quote-card">
+        <p>
+          “ClinicBook keeps our team aligned from the waiting room to follow-up, without burying
+          us in screens.”
+        </p>
+        <strong>Designed for small teams with busy days.</strong>
+      </article>
+    </div>
+  </aside>
+
   <form class="auth-card" [formGroup]="form" (ngSubmit)="submit()">
-    <h1>Sign in</h1>
-    <p>Access your ClinicBook account.</p>
+    <div class="form-copy">
+      <span class="eyebrow">Welcome back</span>
+      <h1>Sign in</h1>
+      <p>Access your ClinicBook account and pick up right where your clinic left off.</p>
+    </div>
+
+    <div class="form-benefits">
+      <span>Appointment overview</span>
+      <span>Team scheduling</span>
+      <span>Quick patient access</span>
+    </div>
 
     <label>
       Email
@@ -20,7 +67,7 @@
     }
 
     @if (authError()) {
-      <small>{{ authError() }}</small>
+      <small class="error-banner">{{ authError() }}</small>
     }
 
     <button type="submit" [disabled]="isSubmitting()">
